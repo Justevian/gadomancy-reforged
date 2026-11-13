@@ -14,7 +14,7 @@
 ## Установка
 
 1. Создайте профиль **Minecraft 26.3** с **NeoForge 26.3.0.102**.
-2. Скачайте **Gadomancy 0.1.20-alpha** из раздела [Releases](../../releases).
+2. Скачайте **Gadomancy 0.1.21-alpha** из раздела [Releases](../../releases).
 3. Положите JAR в папку `mods` вместе с **Thaumcraft 4: Reforged 1.1.3** для Minecraft 26.3 и **TerraBlender 26.3-26.3.0.0.9**.
 
 [Скачать Thaumcraft 4: Reforged](https://github.com/notlikethiss/thaumcraft-4-reforged/releases/tag/26.3)

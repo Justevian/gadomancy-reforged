@@ -14,7 +14,7 @@ An unofficial port of **Gadomancy 1.7.10** to **Minecraft 26.3** on **NeoForge**
 ## Installation
 
 1. Set up **Minecraft 26.3** with **NeoForge 26.3.0.102**.
-2. Download **Gadomancy 0.1.20-alpha** from [Releases](../../releases).
+2. Download **Gadomancy 0.1.21-alpha** from [Releases](../../releases).
 3. Put the JAR in your `mods` folder alongside **Thaumcraft 4: Reforged 1.1.3** for Minecraft 26.3 and **TerraBlender 26.3-26.3.0.0.9**.
 
 [Download Thaumcraft 4: Reforged](https://github.com/notlikethiss/thaumcraft-4-reforged/releases/tag/26.3)
