@@ -28,6 +28,5 @@
 - **makeo** и **HellFirePvP** — авторы [оригинального Gadomancy](https://github.com/makeo/Gadomancy).
 - **Azanor** — автор оригинального Thaumcraft.
 - **overseas** — автор порта [Thaumcraft 4: Reforged](https://github.com/notlikethiss/thaumcraft-4-reforged).
-- **Justevian** — порт Gadomancy для Minecraft 26.3.
 
 Лицензия кода Gadomancy — [LGPL-3.0-or-later](LICENSE).
