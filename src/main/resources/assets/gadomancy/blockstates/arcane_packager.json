@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "gadomancy:block/arcane_packager"
+    },
+    "facing=east": {
+      "model": "gadomancy:block/arcane_packager",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "gadomancy:block/arcane_packager",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gadomancy:block/arcane_packager",
+      "y": 270
+    }
+  }
+}

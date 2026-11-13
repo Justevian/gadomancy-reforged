@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "neoforge:obj",
+  "model": "gadomancy:models/block/essentia_condenser_middle.obj",
+  "automatic_culling": false,
+  "emissive_ambient": false,
+  "textures": {
+    "particle": "gadomancy:block/essentia_compressor",
+    "material_gadomancy_block_essentia_compressor": "gadomancy:block/essentia_compressor"
+  }
+}

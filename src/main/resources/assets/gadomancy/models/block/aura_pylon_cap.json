@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "neoforge:obj",
+  "model": "gadomancy:models/block/aura_pylon_cap.obj",
+  "automatic_culling": false,
+  "emissive_ambient": false,
+  "textures": {
+    "particle": "gadomancy:block/aura_pylon_peak",
+    "material_gadomancy_block_aura_pylon_peak": "gadomancy:block/aura_pylon_peak"
+  }
+}

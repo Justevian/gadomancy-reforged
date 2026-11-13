@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "neoforge:obj",
+  "model": "gadomancy:models/block/enervation_emitter.obj",
+  "automatic_culling": false,
+  "emissive_ambient": false,
+  "textures": {
+    "particle": "gadomancy:block/block_protector_off",
+    "material_gadomancy_block_block_protector_off": "gadomancy:block/block_protector_off"
+  }
+}

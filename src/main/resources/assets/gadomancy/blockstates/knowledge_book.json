@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gadomancy:block/knowledge_book_placed"
+    }
+  }
+}

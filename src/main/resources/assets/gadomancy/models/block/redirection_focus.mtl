@@ -1,0 +1,7 @@
+newmtl base
+Kd 1 1 1
+map_Kd #material_thaumcraft_block_thaumiumblock
+
+newmtl ornament
+Kd 1 1 1
+map_Kd #material_gadomancy_block_manipulation_focus_3

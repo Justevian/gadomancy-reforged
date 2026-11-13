@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "thaumcraft:block/void_jar"
+    },
+    "facing=down": {
+      "model": "thaumcraft:block/void_jar",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "thaumcraft:block/void_jar",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "thaumcraft:block/void_jar",
+      "x": 90,
+      "y": 90
+    },
+    "facing=south": {
+      "model": "thaumcraft:block/void_jar",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west": {
+      "model": "thaumcraft:block/void_jar",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

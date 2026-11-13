@@ -1,0 +1,7 @@
+newmtl arcane_packager
+Kd 1 1 1
+map_Kd #material_gadomancy_block_arcane_packager
+
+newmtl packager_piston
+Kd 1 1 1
+map_Kd #material_gadomancy_block_packager_piston

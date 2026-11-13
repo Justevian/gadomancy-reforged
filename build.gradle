@@ -1,0 +1,42 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+
+version = '0.1.20-alpha+26.3'
+group = 'makeo.gadomancy'
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
+repositories {
+    maven {
+        url = 'https://maven.minecraftforge.net/'
+        content { includeGroup 'com.github.glitchfiend' }
+    }
+}
+
+dependencies {
+    implementation files('libs/thaumcraft-4-reforged-1.1.3-26.3.jar')
+    runtimeOnly 'com.github.glitchfiend:TerraBlender-neoforge:26.3-26.3.0.0.9'
+}
+
+neoForge {
+    version = '26.3.0.102'
+    runs {
+        client { client() }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+    }
+    mods {
+        gadomancy { sourceSet(sourceSets.main) }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('jar', Jar) {
+    from('LICENSE')
+}

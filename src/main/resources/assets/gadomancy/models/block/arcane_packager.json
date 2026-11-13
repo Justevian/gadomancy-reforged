@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "neoforge:obj",
+  "model": "gadomancy:models/block/arcane_packager.obj",
+  "automatic_culling": false,
+  "emissive_ambient": false,
+  "textures": {
+    "particle": "gadomancy:block/arcane_packager",
+    "material_gadomancy_block_arcane_packager": "gadomancy:block/arcane_packager",
+    "material_gadomancy_block_packager_piston": "gadomancy:block/packager_piston"
+  }
+}

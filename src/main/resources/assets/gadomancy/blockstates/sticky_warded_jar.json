@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "thaumcraft:block/warded_jar"
+    },
+    "facing=down": {
+      "model": "thaumcraft:block/warded_jar",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "thaumcraft:block/warded_jar",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "thaumcraft:block/warded_jar",
+      "x": 90,
+      "y": 90
+    },
+    "facing=south": {
+      "model": "thaumcraft:block/warded_jar",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west": {
+      "model": "thaumcraft:block/warded_jar",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

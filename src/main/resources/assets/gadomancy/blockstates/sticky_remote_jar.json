@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "gadomancy:block/remote_jar"
+    },
+    "facing=down": {
+      "model": "gadomancy:block/remote_jar",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "gadomancy:block/remote_jar",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "gadomancy:block/remote_jar",
+      "x": 90,
+      "y": 90
+    },
+    "facing=south": {
+      "model": "gadomancy:block/remote_jar",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gadomancy:block/remote_jar",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

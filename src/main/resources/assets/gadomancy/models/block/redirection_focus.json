@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "neoforge:obj",
+  "model": "gadomancy:models/block/redirection_focus.obj",
+  "automatic_culling": false,
+  "emissive_ambient": false,
+  "textures": {
+    "particle": "thaumcraft:block/thaumiumblock",
+    "material_thaumcraft_block_thaumiumblock": "thaumcraft:block/thaumiumblock",
+    "material_gadomancy_block_manipulation_focus_3": "gadomancy:block/manipulation_focus_3"
+  }
+}

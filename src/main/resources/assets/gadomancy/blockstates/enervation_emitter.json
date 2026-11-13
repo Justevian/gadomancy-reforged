@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gadomancy:block/enervation_emitter"
+    },
+    "active=true": {
+      "model": "gadomancy:block/enervation_emitter_active"
+    }
+  }
+}

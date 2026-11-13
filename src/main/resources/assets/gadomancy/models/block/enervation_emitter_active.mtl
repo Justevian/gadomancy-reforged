@@ -1,0 +1,3 @@
+newmtl block_protector_on
+Kd 1 1 1
+map_Kd #material_gadomancy_block_block_protector_on
