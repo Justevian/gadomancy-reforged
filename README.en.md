@@ -28,6 +28,5 @@ Install **JDK 25** and put `thaumcraft-4-reforged-1.1.3-26.3.jar` in the reposit
 - **makeo** and **HellFirePvP** — [original Gadomancy](https://github.com/makeo/Gadomancy).
 - **Azanor** — original Thaumcraft.
 - **overseas** — [Thaumcraft 4: Reforged](https://github.com/notlikethiss/thaumcraft-4-reforged).
-- **Justevian** — Gadomancy port to Minecraft 26.3.
 
 Gadomancy's code is licensed under [LGPL-3.0-or-later](LICENSE).
