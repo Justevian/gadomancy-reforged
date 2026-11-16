@@ -58,7 +58,7 @@ final class KnowledgeBooks {
             new AspectList().add(Aspect.MIND, 12).add(Aspect.MAGIC, 8).add(Aspect.MOTION, 6)
                 .add(Aspect.ORDER, 10).add(Aspect.MECHANISM, 8).add(Aspect.CRAFT, 8),
             -2, 8, 2, book
-        ).setParents(AuraCores.RESEARCH, "GOGGLES", "THAUMATORIUM").setWarp(1).setPages(
+        ).setParents(AuraCores.RESEARCH, "GOGGLES", "THAUMATORIUM").setWarp(1).setHidden().setItemTriggers("gadomancy:aura_core_order").setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.KNOWLEDGE_BOOK.1"),
             ResearchPage.arcane(RECIPE),
             ResearchPage.text("tc.research_page.GADOMANCY.KNOWLEDGE_BOOK.3"),

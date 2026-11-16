@@ -34,7 +34,7 @@ public final class ThaumicSight {
         ResearchCategories.addResearch(new ResearchItem(RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.SENSES, 4).add(Aspect.MAGIC, 4),
             1, 3, 1, TcStack.of("thaumcraft:goggles_of_revealing")
-        ).setParents("INFUSIONENCHANTMENT", "GOGGLES").setConcealed().setPages(
+        ).setParents(ResearchLinks.link("INFUSIONENCHANTMENT"), "GOGGLES").setConcealed().setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.REVEALER.1"), ResearchPage.infusionEnchantment(RECIPE)
         ));
     }

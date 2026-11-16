@@ -57,13 +57,13 @@ public final class GolemCores {
         ResearchCategories.addResearch(new ResearchItem(BREAK_RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.TOOL, 8).add(Aspect.ENTROPY, 8).add(Aspect.MECHANISM, 8),
             3, -3, 3, TcStack.of(breaking)
-        ).setParents("COREHARVEST", "ELEMENTALAXE", "ELEMENTALPICK", "ELEMENTALSHOVEL").setConcealed()
+        ).setParents(ResearchLinks.link("COREHARVEST"), "ELEMENTALAXE", "ELEMENTALPICK", "ELEMENTALSHOVEL").setConcealed()
             .setPages(ResearchPage.text("tc.research_page." + BREAK_RESEARCH + ".1"), ResearchPage.infusion(breaking)));
         ResearchCategories.addResearch(new ResearchItem(BODYGUARD_RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.TOOL, 8).add(Aspect.ORDER, 8).add(Aspect.MECHANISM, 10)
                 .add(Aspect.ARMOR, 8).add(Aspect.WEAPON, 8),
             5, -3, 2, TcStack.of(guard)
-        ).setParents("COREGUARD", "ELEMENTALSWORD", "BOOTSTRAVELLER").setConcealed()
+        ).setParents(ResearchLinks.link("COREGUARD"), "ELEMENTALSWORD", "BOOTSTRAVELLER").setConcealed()
             .setPages(ResearchPage.text("tc.research_page." + BODYGUARD_RESEARCH + ".1"), ResearchPage.infusion(guard)));
     }
 

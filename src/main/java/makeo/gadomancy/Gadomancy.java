@@ -35,7 +35,6 @@ import thaumcraft.research.ResearchPage;
 @Mod(Gadomancy.MOD_ID)
 public final class Gadomancy {
     public static final String MOD_ID = "gadomancy";
-    private static final String RESEARCH = "GADOMANCY.ELEMENT_DARKNESS";
     private static final String RECIPE = "gadomancy:element_darkness";
     private static final String DROPPER_RESEARCH = "GADOMANCY.ARCANEDROPPER";
     private static final String DROPPER_RECIPE = "gadomancy:arcane_dropper";
@@ -131,7 +130,7 @@ public final class Gadomancy {
             TcIngredient salisMundus = TcIngredient.item("thaumcraft:salis_mundus");
 
             TcRecipes.register(new InfusionRecipe(
-                RECIPE, RESEARCH, result, 6,
+                RECIPE, AuraStructures.CONDENSER_RESEARCH, result, 6,
                 new AspectList().add(Aspect.VOID, 16).add(Aspect.DARKNESS, 13)
                     .add(Aspect.ELDRITCH, 15).add(Aspect.AURA, 7),
                 TcIngredient.item("thaumcraft:void_seed"),
@@ -143,14 +142,7 @@ public final class Gadomancy {
                 Identifier.fromNamespaceAndPath(MOD_ID, "textures/item/category_icon.png"),
                 Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/gui_researchback.png")
             );
-            ResearchCategories.addResearch(new ResearchItem(
-                RESEARCH, MOD_ID,
-                new AspectList().add(Aspect.DARKNESS, 5).add(Aspect.VOID, 5).add(Aspect.ELDRITCH, 3),
-                0, 0, 2, result
-            ).setParents("VOIDMETAL").setParentsHidden("INFUSION").setPages(
-                ResearchPage.text("tc.research_page.GADOMANCY.ELEMENT_DARKNESS.1"),
-                ResearchPage.infusion(RECIPE)
-            ));
+            ResearchLinks.register();
             registerDropperResearch();
             RemoteJars.registerResearch();
             StickyJars.registerResearch();
@@ -167,6 +159,8 @@ public final class Gadomancy {
             FamiliarRecipes.register();
             SilverwoodGolems.registerResearch();
             RunicGolemShields.registerResearch();
+            ResearchCategories.addResearch(new ResearchItem(ResearchLinks.FAMILIAR_ELEMENT, MOD_ID));
+            AuraNotes.register();
         });
     }
 
@@ -187,8 +181,8 @@ public final class Gadomancy {
             DROPPER_RESEARCH, MOD_ID,
             new AspectList().add(Aspect.ORDER, 4).add(Aspect.AIR, 6).add(Aspect.EARTH, 5)
                 .add(Aspect.SENSES, 5).add(Aspect.MECHANISM, 7),
-            -2, -2, 2, result
-        ).setParents("DISTILESSENTIA", "BELLOWS").setPages(
+            -1, -3, 2, result
+        ).setParents("DISTILESSENTIA", ResearchLinks.link("BELLOWS")).setConcealed().setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.ARCANEDROPPER.1"),
             ResearchPage.arcane(DROPPER_RECIPE)
         ));

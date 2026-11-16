@@ -166,9 +166,10 @@ public final class FamiliarRecipes {
         if (augment == FamiliarAugment.SPEED) {
             research.setParents(FamiliarAugment.DAMAGE.research(), FamiliarAugment.RANGE.research(), "PRIMPEARL");
         } else if (augment == FamiliarAugment.DAMAGE) {
-            research.setParents(RESEARCH, "VOIDMETAL");
+            research.setParents(RESEARCH, "VOIDMETAL").setParentsHidden(ResearchLinks.FAMILIAR_ELEMENT);
         } else {
             research.setParents(RESEARCH);
+            if (augment == FamiliarAugment.RANGE) research.setParentsHidden(ResearchLinks.FAMILIAR_ELEMENT);
         }
         ResearchCategories.addResearch(research);
     }

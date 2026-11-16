@@ -46,7 +46,7 @@ public final class SilverwoodGolems {
             new AspectList().add(Aspect.MOTION, 10).add(Aspect.TREE, 10).add(Aspect.MAGIC, 8)
                 .add(Aspect.ORDER, 8).add(Aspect.FLESH, 6).add(Aspect.EXCHANGE, 5),
             1, -2, 3, result
-        ).setParents("GOLEMTALLOW").setConcealed().setPages(
+        ).setParents(ResearchLinks.link("GOLEMTALLOW")).setConcealed().setPages(
             ResearchPage.text("tc.research_page." + RESEARCH + ".1"), ResearchPage.infusion(ID)
         ));
     }

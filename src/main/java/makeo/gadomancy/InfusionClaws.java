@@ -72,8 +72,8 @@ final class InfusionClaws {
             RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.ELDRITCH, 8).add(Aspect.MECHANISM, 8).add(Aspect.MAGIC, 8)
                 .add(Aspect.ORDER, 8).add(Aspect.DARKNESS, 4),
-            -6, -7, 3, result
-        ).setParents("FOCUSPRIMAL", "VOIDMETAL", "WANDPED", "COREUSE").setPages(
+            -6, -7, 5, result
+        ).setParents("FOCUSPRIMAL", ResearchLinks.link("VOIDMETAL"), ResearchLinks.link("WANDPED"), "COREUSE").setConcealed().setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.INFUSIONCLAW.1"),
             ResearchPage.infusion(RECIPE),
             ResearchPage.text("tc.research_page.GADOMANCY.INFUSIONCLAW.2")

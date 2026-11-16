@@ -20,6 +20,8 @@ final class RemoteJarRenderer {
         event.registerBlockEntityRenderer(AuraStructures.PEDESTAL_TYPE.get(), ArcanePedestalRenderer::new);
         event.registerBlockEntityRenderer(AuraStructures.CONDENSER_TYPE.get(), CondenserRenderer::new);
         event.registerBlockEntityRenderer(KnowledgeBooks.TYPE.get(), KnowledgeBookRenderer::new);
+        event.registerBlockEntityRenderer(NodeManipulators.TYPE.get(), NodeManipulatorRenderer::new);
+        event.registerBlockEntityRenderer(NodeManipulators.PORTAL_TYPE.get(), VoidwalkerPortalRenderer::new);
         AuraStructureBlock.visualTick = AuraStructureVisuals::tick;
     }
 }

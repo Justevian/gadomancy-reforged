@@ -5,8 +5,7 @@
   "automatic_culling": false,
   "emissive_ambient": false,
   "textures": {
-    "particle": "thaumcraft:block/thaumiumblock",
-    "material_thaumcraft_block_thaumiumblock": "thaumcraft:block/thaumiumblock",
+    "particle": "gadomancy:block/manipulation_focus_0",
     "material_gadomancy_block_manipulation_focus_0": "gadomancy:block/manipulation_focus_0"
   }
 }

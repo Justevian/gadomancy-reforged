@@ -70,7 +70,7 @@ final class RemoteJars {
         ResearchCategories.addResearch(new ResearchItem(RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.WATER, 4).add(Aspect.MECHANISM, 8).add(Aspect.EARTH, 4).add(Aspect.ORDER, 8),
             -4, -3, 3, result
-        ).setParents("JARLABEL", "MIRRORESSENTIA").setPages(
+        ).setParents(ResearchLinks.link("JARLABEL"), "MIRRORESSENTIA").setConcealed().setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.REMOTEJAR.1"),
             ResearchPage.arcane(RECIPE),
             ResearchPage.text("tc.research_page.GADOMANCY.REMOTEJAR.2")

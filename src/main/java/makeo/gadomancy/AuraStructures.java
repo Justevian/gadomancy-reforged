@@ -24,7 +24,7 @@ import thaumcraft.research.ResearchItem;
 import thaumcraft.research.ResearchPage;
 
 final class AuraStructures {
-    private static final String CONDENSER_RESEARCH = "GADOMANCY.ESSENTIA_COMPRESSOR";
+    static final String CONDENSER_RESEARCH = "GADOMANCY.ESSENTIA_COMPRESSOR";
     private static final String PYLON_RESEARCH = "GADOMANCY.AURA_PYLON";
     private static final String CONDENSER_ID = "essentia_condenser";
     private static final String PYLON_ID = "aura_pylon";
@@ -116,7 +116,7 @@ final class AuraStructures {
             new AspectList().add(Aspect.ELDRITCH, 10).add(Aspect.EARTH, 8)
                 .add(Aspect.EXCHANGE, 6).add(Aspect.ENTROPY, 8),
             -12, 1, 3, TcStack.of("thaumcraft:ancient_stone")
-        ).setParents("OCULUS").setPages(
+        ).setParents(ResearchLinks.link("OCULUS")).setConcealed().setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.ANCIENT_STONES.1"),
             ResearchPage.arcane(stone),
             ResearchPage.crucible(pedestal)
@@ -140,7 +140,7 @@ final class AuraStructures {
         TcIngredient stone = TcIngredient.item("thaumcraft:ancient_stone");
         TcIngredient slab = TcIngredient.item("thaumcraft:ancient_stone_pedestal");
         TcIngredient empty = TcIngredient.EMPTY;
-        TcRecipes.register(new ShapedArcaneRecipe(pedestal, CONDENSER_RESEARCH, TcStack.of(pedestal),
+        TcRecipes.register(new ShapedArcaneRecipe(pedestal, NodeManipulators.GATE, TcStack.of(pedestal),
             new AspectList().add(Aspect.ENTROPY, 25).add(Aspect.ORDER, 25),
             3, 3, List.of(stone, slab, stone, empty, stone, empty, stone, slab, stone)));
         TcStack section = TcStack.of(id);
@@ -150,13 +150,14 @@ final class AuraStructures {
             new AspectList().add(Aspect.VOID, 12).add(Aspect.WATER, 10).add(Aspect.ENTROPY, 12)
                 .add(Aspect.MAGIC, 6).add(Aspect.MECHANISM, 12),
             -4, 7, 2, section
-        ).setParents(AuraCores.RESEARCH, "ESSENTIARESERVOIR", "GADOMANCY.ELEMENT_DARKNESS").setPages(
+        ).setParents(AuraCores.RESEARCH, ResearchLinks.link("ESSENTIARESERVOIR")).setHidden().setItemTriggers("gadomancy:aura_core_water").setWarp(3).setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.ESSENTIA_COMPRESSOR.1"),
-            ResearchPage.arcane(id), ResearchPage.compound(assembly),
             ResearchPage.text("tc.research_page.GADOMANCY.ESSENTIA_COMPRESSOR.2"),
-            ResearchPage.arcane(pedestal),
+            ResearchPage.infusion("gadomancy:element_darkness"),
             ResearchPage.text("tc.research_page.GADOMANCY.ESSENTIA_COMPRESSOR.4"),
+            ResearchPage.arcane(id),
             ResearchPage.text("tc.research_page.GADOMANCY.ESSENTIA_COMPRESSOR.6"),
+            ResearchPage.compound(assembly),
             ResearchPage.text("tc.research_page.GADOMANCY.ESSENTIA_COMPRESSOR.8"),
             ResearchPage.text("tc.research_page.GADOMANCY.ESSENTIA_COMPRESSOR.9")
         ));
@@ -189,16 +190,16 @@ final class AuraStructures {
         ResearchCategories.addResearch(new ResearchItem(PYLON_RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.ORDER, 12).add(Aspect.AURA, 20).add(Aspect.MAGIC, 12).add(Aspect.MECHANISM, 8),
             0, 9, 2, crown
-        ).setParents(AuraCores.RESEARCH, "TUBEFILTER").setPages(
+        ).setParents(AuraCores.RESEARCH, "TUBEFILTER").setHidden().setItemTriggers("gadomancy:aura_core_fire").setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.AURA_PYLON.1"),
-            ResearchPage.arcane(id, cap), ResearchPage.compound(assembly),
-            ResearchPage.text("tc.research_page.GADOMANCY.AURA_PYLON.4")
+            ResearchPage.arcane(id), ResearchPage.arcane(cap),
+            ResearchPage.text("tc.research_page.GADOMANCY.AURA_PYLON.4"), ResearchPage.compound(assembly)
         ));
         ResearchCategories.addResearch(new ResearchItem("GADOMANCY.AURA_EFFECTS", Gadomancy.MOD_ID,
             new AspectList().add(Aspect.AURA, 6).add(Aspect.MIND, 8).add(Aspect.MAGIC, 4).add(Aspect.ORDER, 4),
-            1, 10, 2, crown
+            1, 10, 2, net.minecraft.resources.Identifier.parse("thaumcraft:textures/misc/r_aspects.png")
         ).setConcealed().setSecondary().setParents(PYLON_RESEARCH).setPages(
-            ResearchPage.text("tc.research_page.GADOMANCY.AURA_EFFECTS.1")
+            AuraNotes.pages()
         ));
     }
 }

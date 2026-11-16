@@ -80,10 +80,10 @@ final class ArcanePackagers {
         ResearchCategories.addResearch(new ResearchItem(RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.AIR, 12).add(Aspect.MECHANISM, 16).add(Aspect.VOID, 10).add(Aspect.MAGIC, 10),
             2, 7, 2, result
-        ).setParents(AuraCores.RESEARCH, "WARDEDARCANA").setWarp(1).setPages(
+        ).setParents(AuraCores.RESEARCH, "WARDEDARCANA").setHidden().setItemTriggers("gadomancy:aura_core_air").setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.ARCANE_PACKAGER.1"),
             ResearchPage.arcane(RECIPE),
-            ResearchPage.text("tc.research_page.GADOMANCY.ARCANE_PACKAGER.2")
+            ResearchPage.text("tc.research_page.GADOMANCY.ARCANE_PACKAGER.3"), ResearchPage.text("tc.research_page.GADOMANCY.ARCANE_PACKAGER.4")
         ));
     }
 }

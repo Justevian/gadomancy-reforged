@@ -45,11 +45,17 @@ final class NodeManipulators {
         BLOCKS.registerBlock("randomization_focus", ManipulationFocusBlock::new, properties -> properties.strength(4F).noOcclusion());
     static final DeferredBlock<Block> REDIRECTION =
         BLOCKS.registerBlock("redirection_focus", ManipulationFocusBlock::new, properties -> properties.strength(4F).noOcclusion());
+    static final DeferredBlock<Block> PILLAR_BASE = BLOCKS.registerBlock("manipulator_pillar_base",
+        properties -> new ManipulatorPillarBlock(properties, false), properties -> properties.strength(2.0F, 10.0F).noOcclusion());
+    static final DeferredBlock<Block> PILLAR_TOP = BLOCKS.registerBlock("manipulator_pillar_top",
+        properties -> new ManipulatorPillarBlock(properties, true), properties -> properties.strength(2.0F, 10.0F).noOcclusion());
     static final DeferredBlock<VoidwalkerPortalBlock> PORTAL =
         BLOCKS.registerBlock("voidwalker_portal", VoidwalkerPortalBlock::new,
             properties -> properties.noCollision().noLootTable().strength(-1F).lightLevel(state -> 11));
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NodeManipulatorBlockEntity>> TYPE =
         ENTITIES.register("node_manipulator", () -> new BlockEntityType<>(NodeManipulatorBlockEntity::new, MANIPULATOR.get()));
+    static final DeferredHolder<BlockEntityType<?>, BlockEntityType<VoidwalkerPortalBlockEntity>> PORTAL_TYPE =
+        ENTITIES.register("voidwalker_portal", () -> new BlockEntityType<>(VoidwalkerPortalBlockEntity::new, PORTAL.get()));
     static final List<DeferredItem<BlockItem>> CREATIVE_ITEMS = List.of(
         ITEMS.registerSimpleBlockItem(MANIPULATOR), ITEMS.registerSimpleBlockItem(RANDOMIZATION),
         ITEMS.registerSimpleBlockItem(REDIRECTION));
@@ -99,7 +105,7 @@ final class NodeManipulators {
                 .add(Aspect.MAGIC, 8).add(Aspect.GREED, 4).add(Aspect.VOID, 10)
                 .add(Aspect.MECHANISM, 6).add(Aspect.EXCHANGE, 4),
             -9, -4, 2, TcStack.of(MANIPULATOR_ID)
-        ).setParents("VOIDMETAL", "PAVEWARD", "WANDPED", "WANDPEDFOC").setWarp(4).setSpecial().setConcealed().setPages(
+        ).setParents(ResearchLinks.link("VOIDMETAL"), "PAVEWARD", ResearchLinks.link("WANDPED"), "WANDPEDFOC").setWarp(4).setSpecial().setConcealed().setPages(
             page(MUTATION), ResearchPage.infusion(MANIPULATOR_ID), page(MUTATION, 3), ResearchPage.infusion(RANDOMIZATION_ID),
             ResearchPage.compound(mutationDiagram), page(MUTATION, 6)
         ));
@@ -107,7 +113,7 @@ final class NodeManipulators {
             new AspectList().add(Aspect.ELDRITCH, 6).add(Aspect.DARKNESS, 10).add(Aspect.TRAVEL, 8)
                 .add(Aspect.AURA, 10).add(Aspect.VOID, 6).add(Aspect.MECHANISM, 4),
             -10, 0, 2, TcStack.of(REDIRECTION_ID)
-        ).setParents(MUTATION, "OCULUS", "GADOMANCY.ESSENTIA_COMPRESSOR").setWarp(4).setSpecial().setConcealed().setPages(
+        ).setParents(MUTATION, ResearchLinks.link("OCULUS")).setWarp(4).setSpecial().setConcealed().setPages(
             page(GATE), ResearchPage.arcane("gadomancy:ancient_pedestal"), page(GATE, 3), page(GATE, 4),
             ResearchPage.infusion(REDIRECTION_ID), page(GATE, 6), ResearchPage.compound(portalDiagram), page(GATE, 8)
         ));
@@ -135,7 +141,7 @@ final class NodeManipulators {
 
     private static String registerDiagram(boolean portal) {
         String id = portal ? "gadomancy:voidwalker_gate_assembly" : "gadomancy:node_manipulator_assembly";
-        int width = 3;
+        int width = portal ? 7 : 3;
         int center = width / 2;
         int layer = width * width;
         List<TcStack> cells = new ArrayList<>(Collections.nCopies(layer * 3, TcStack.NONE));
@@ -146,6 +152,13 @@ final class NodeManipulators {
             for (int x : new int[]{center - 1, center + 1}) {
                 cells.set(layer + z * width + x, TcStack.of("thaumcraft:ancient_stone"));
                 cells.set(2 * layer + z * width + x, TcStack.of("thaumcraft:ancient_stone_pedestal"));
+            }
+        }
+        if (portal) {
+            var pedestal = TcStack.of("gadomancy:ancient_pedestal");
+            for (int offset : new int[]{0, width - 1}) {
+                cells.set(2 * layer + offset * width + center, pedestal);
+                cells.set(2 * layer + center * width + offset, pedestal);
             }
         }
         TcRecipes.register(new CompoundRecipe(id, portal ? GATE : MUTATION, assemblyCost(portal), width, 3, width, cells));

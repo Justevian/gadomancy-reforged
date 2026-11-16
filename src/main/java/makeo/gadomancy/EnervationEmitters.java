@@ -85,10 +85,10 @@ final class EnervationEmitters {
         ResearchCategories.addResearch(new ResearchItem(RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.ORDER, 10).add(Aspect.ARMOR, 8).add(Aspect.EARTH, 12)
                 .add(Aspect.LIGHT, 10).add(Aspect.AURA, 8), -6, -2, 2, result
-        ).setParents("GADOMANCY.STICKYJAR").setPages(
+        ).setParents("GADOMANCY.STICKYJAR").setConcealed().setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.BLOCK_PROTECTOR.1"),
             ResearchPage.arcane(RECIPE),
-            ResearchPage.text("tc.research_page.GADOMANCY.BLOCK_PROTECTOR.2")
+            ResearchPage.text("tc.research_page.GADOMANCY.BLOCK_PROTECTOR.3"), ResearchPage.text("tc.research_page.GADOMANCY.BLOCK_PROTECTOR.4")
         ));
     }
 

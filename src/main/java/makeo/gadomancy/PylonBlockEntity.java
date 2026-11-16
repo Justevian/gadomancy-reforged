@@ -67,6 +67,7 @@ final class PylonBlockEntity extends AuraStructureBlockEntity {
         }
         if (amount > 0) {
             PylonEffects.apply(server, flame, aspect, tick);
+            if (tick % 8 == 0) AuraNotes.observe(server, flame, aspect);
             if (tick % 32 == 0) {
                 amount--;
                 sync();

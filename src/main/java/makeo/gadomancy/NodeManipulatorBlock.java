@@ -25,7 +25,6 @@ import org.jspecify.annotations.Nullable;
 import thaumcraft.research.ResearchGate;
 import thaumcraft.wand.WandInteractable;
 import thaumcraft.wand.WandItem;
-import thaumcraft.wand.Wands;
 
 final class NodeManipulatorBlock extends Block implements EntityBlock, WandInteractable {
     private static final VoxelShape SHAPE = Shapes.or(box(0, 0, 0, 16, 4, 16),
@@ -55,38 +54,46 @@ final class NodeManipulatorBlock extends Block implements EntityBlock, WandInter
 
     @Override
     public InteractionResult onWandUseOn(Level level, BlockPos pos, Player player, ItemStack stack, Direction side) {
+        return useManipulator(level, pos, player, stack);
+    }
+
+    static InteractionResult useManipulator(Level level, BlockPos pos, Player player, ItemStack stack) {
         if (!(stack.getItem() instanceof WandItem wand)
-            || !(level.getBlockEntity(pos) instanceof NodeManipulatorBlockEntity manipulator) || manipulator.isAssembled()) {
-            return InteractionResult.PASS;
+            || !(level.getBlockEntity(pos) instanceof NodeManipulatorBlockEntity manipulator)) return InteractionResult.PASS;
+        if (manipulator.isAssembled()) {
+            if (!manipulator.canInsert(player)) return InteractionResult.PASS;
+            if (level instanceof ServerLevel server && server.mayInteract(player, pos)) {
+                manipulator.insert(stack.copyWithCount(1));
+                stack.shrink(1);
+            }
+            return InteractionResult.SUCCESS;
         }
+        if (!(level instanceof ServerLevel server)) return InteractionResult.SUCCESS;
         boolean portal = level.getBlockState(pos.above()).is(NodeManipulators.REDIRECTION.get());
-        if (!ResearchGate.isComplete(player, portal ? NodeManipulators.GATE : NodeManipulators.MUTATION)
-            || !manipulator.matches(level, portal, false)) {
-            return InteractionResult.PASS;
+        if (!manipulator.matches(level, portal, false)) {
+            player.sendSystemMessage(Component.translatable("message.gadomancy.node_manipulator.structure"));
+            return InteractionResult.FAIL;
         }
-        if (level instanceof ServerLevel server) {
-            if (!manipulator.mayOperate(server, player, portal)
-                || !wand.consumeAllVisCrafting(stack, player, NodeManipulators.assemblyCost(portal), true)) {
+        if (!manipulator.mayOperate(server, player, portal)) return InteractionResult.FAIL;
+        if (!player.hasInfiniteMaterials()) {
+            if (!ResearchGate.isComplete(player, portal ? NodeManipulators.GATE : NodeManipulators.MUTATION)) {
+                player.sendSystemMessage(Component.translatable("message.gadomancy.node_manipulator.research"));
                 return InteractionResult.FAIL;
             }
-            manipulator.assemble(player, portal);
-            player.sendSystemMessage(Component.translatable("message.gadomancy.node_manipulator.assembled"));
+            if (!wand.consumeAllVisCrafting(stack, player, NodeManipulators.assemblyCost(portal), true)) {
+                player.sendSystemMessage(Component.translatable("message.gadomancy.node_manipulator.vis", portal ? 150 : 100));
+                return InteractionResult.FAIL;
+            }
         }
+        manipulator.assemble(player, portal);
+        player.sendSystemMessage(Component.translatable("message.gadomancy.node_manipulator.assembled"));
         return InteractionResult.SUCCESS;
     }
 
     @Override
     protected InteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos,
         Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!Wands.isWand(held) || !(level.getBlockEntity(pos) instanceof NodeManipulatorBlockEntity manipulator)
-            || !manipulator.canInsert(player)) {
-            return InteractionResult.PASS;
-        }
-        if (level instanceof ServerLevel server && server.mayInteract(player, pos)) {
-            manipulator.insert(held.copyWithCount(1));
-            held.shrink(1);
-        }
-        return InteractionResult.SUCCESS;
+        return useManipulator(level, pos, player, held);
     }
 
     @Override

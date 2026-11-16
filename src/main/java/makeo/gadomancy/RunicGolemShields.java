@@ -58,8 +58,8 @@ public final class RunicGolemShields {
         }
         ResearchCategories.addResearch(new ResearchItem(RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.AURA, 16).add(Aspect.ARMOR, 6).add(Aspect.MAGIC, 4).add(Aspect.MOTION, 8),
-            1, 1, 4, TcStack.of("thaumcraft:runic_shielding_girdle")
-        ).setParents("RUNICARMOR", SilverwoodGolems.RESEARCH).setConcealed().setPages(
+            0, 0, 4, TcStack.of("thaumcraft:runic_shielding_girdle")
+        ).setParents(SilverwoodGolems.RESEARCH).setConcealed().setPages(
             ResearchPage.text("tc.research_page." + RESEARCH + ".1"),
             ResearchPage.infusion(recipes.toArray(String[]::new))
         ));

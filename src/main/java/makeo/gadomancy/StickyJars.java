@@ -86,7 +86,7 @@ final class StickyJars {
         ResearchCategories.addResearch(new ResearchItem(
             RESEARCH, Gadomancy.MOD_ID, new AspectList().add(Aspect.SLIME, 8).add(Aspect.EARTH, 8),
             -5, -5, 2, TcStack.of("gadomancy:" + WARDED_ID)
-        ).setParents("JARLABEL").setPages(
+        ).setParents(ResearchLinks.link("JARLABEL")).setConcealed().setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.STICKYJAR.1"),
             ResearchPage.arcane("gadomancy:" + WARDED_ID, "gadomancy:" + VOID_ID, "gadomancy:" + REMOTE_ID)
         ));

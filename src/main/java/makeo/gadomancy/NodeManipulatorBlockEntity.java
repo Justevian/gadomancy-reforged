@@ -36,7 +36,7 @@ import thaumcraft.registry.ModBlocks;
 import thaumcraft.wand.Wands;
 
 final class NodeManipulatorBlockEntity extends TcBlockEntity {
-    private static final List<BlockPos> CORNERS = List.of(
+    static final List<BlockPos> CORNERS = List.of(
         new BlockPos(-1, 0, -1), new BlockPos(1, 0, -1), new BlockPos(-1, 0, 1), new BlockPos(1, 0, 1));
     private static final List<NodeType> TYPES = List.of(
         NodeType.NORMAL, NodeType.NORMAL, NodeType.PURE, NodeType.DARK,
@@ -44,6 +44,7 @@ final class NodeManipulatorBlockEntity extends TcBlockEntity {
     private @Nullable UUID owner;
     private boolean portal;
     private int workTicks;
+    private boolean transferringVis;
     private ItemStack wand = ItemStack.EMPTY;
     private final int[] charge = new int[Aspect.getPrimalAspects().size()];
 
@@ -66,6 +67,7 @@ final class NodeManipulatorBlockEntity extends TcBlockEntity {
     void assemble(Player player, boolean usePortal) {
         owner = player.getUUID();
         portal = usePortal;
+        updatePillars(true);
         sync();
     }
 
@@ -77,8 +79,30 @@ final class NodeManipulatorBlockEntity extends TcBlockEntity {
     ItemStack removeWand() {
         ItemStack result = wand;
         wand = ItemStack.EMPTY;
+        transferringVis = false;
         sync();
         return result;
+    }
+
+    ItemStack installedWand() { return wand; }
+    boolean isTransferringVis() { return transferringVis; }
+
+    private void updatePillars(boolean forming) {
+        if (!(level instanceof ServerLevel server)) return;
+        Block base = ModBlocks.ANCIENT_STONE_PEDESTAL.get();
+        Block stone = ModBlocks.ANCIENT_STONE.get();
+        Block formedBase = NodeManipulators.PILLAR_BASE.get();
+        Block formedTop = NodeManipulators.PILLAR_TOP.get();
+        for (BlockPos corner : CORNERS) {
+            BlockPos bottom = worldPosition.offset(corner);
+            if (!server.hasChunkAt(bottom)) continue;
+            replacePillarPart(server, bottom, forming ? base : formedBase, forming ? formedBase : base);
+            replacePillarPart(server, bottom.above(), forming ? stone : formedTop, forming ? formedTop : stone);
+        }
+    }
+
+    private static void replacePillarPart(ServerLevel level, BlockPos pos, Block before, Block after) {
+        if (level.getBlockState(pos).is(before)) level.setBlockAndUpdate(pos, after.defaultBlockState());
     }
 
     boolean matches(Level level, boolean usePortal, boolean requireEyes) {
@@ -93,8 +117,11 @@ final class NodeManipulatorBlockEntity extends TcBlockEntity {
         }
         for (BlockPos corner : CORNERS) {
             BlockPos pillar = pos.offset(corner);
-            if (!level.getBlockState(pillar).is(ModBlocks.ANCIENT_STONE_PEDESTAL.get())
-                || !level.getBlockState(pillar.above()).is(ModBlocks.ANCIENT_STONE.get())) {
+            boolean original = level.getBlockState(pillar).is(ModBlocks.ANCIENT_STONE_PEDESTAL.get())
+                && level.getBlockState(pillar.above()).is(ModBlocks.ANCIENT_STONE.get());
+            boolean assembled = isAssembled() && level.getBlockState(pillar).is(NodeManipulators.PILLAR_BASE.get())
+                && level.getBlockState(pillar.above()).is(NodeManipulators.PILLAR_TOP.get());
+            if (!original && !assembled) {
                 return false;
             }
         }
@@ -147,8 +174,10 @@ final class NodeManipulatorBlockEntity extends TcBlockEntity {
             return;
         }
         if (!matchesFocusAndPillars(level, portal)) {
+            updatePillars(false);
             ItemStack returned = wand;
             wand = ItemStack.EMPTY;
+            transferringVis = false;
             Arrays.fill(charge, 0);
             owner = null;
             workTicks = 0;
@@ -159,10 +188,15 @@ final class NodeManipulatorBlockEntity extends TcBlockEntity {
             }
             return;
         }
+        updatePillars(true);
         ServerPlayer player = level.getServer().getPlayerList().getPlayer(owner);
         if (!Wands.isWand(wand) || player == null || player.level() != level
             || !mayOperate(level, player, List.of())
             || !(level.getBlockEntity(worldPosition.above(2)) instanceof NodeBlockEntity node)) {
+            if (transferringVis) {
+                transferringVis = false;
+                sync();
+            }
             return;
         }
         List<Aspect> primals = Aspect.getPrimalAspects();
@@ -170,15 +204,25 @@ final class NodeManipulatorBlockEntity extends TcBlockEntity {
         int max = portal ? 150 : 120;
         boolean charged = true;
         boolean draining = false;
+        boolean nodeRefilled = false;
         for (int i = 0; i < charge.length; i++) {
             Aspect aspect = primals.get(i);
             int vis = Wands.getVis(wand, aspect);
             if (vis >= 100 && charge[i] < max) {
                 Wands.storeVis(wand, aspect, vis - 100);
                 charge[i]++;
+                if (!portal && node.getAspects().getAmount(aspect) < node.getNodeVisBase(aspect)) {
+                    node.addToContainer(aspect, 1);
+                    nodeRefilled = true;
+                }
                 draining = true;
             }
             charged &= charge[i] >= min;
+        }
+        if (nodeRefilled) node.sync();
+        if (transferringVis != draining) {
+            transferringVis = draining;
+            sync();
         }
         if (draining) {
             setChanged();
@@ -300,9 +344,11 @@ final class NodeManipulatorBlockEntity extends TcBlockEntity {
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        updatePillars(false);
         if (level instanceof ServerLevel server && !wand.isEmpty()) {
             Containers.dropItemStack(server, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, wand);
             wand = ItemStack.EMPTY;
+            transferringVis = false;
         }
         super.preRemoveSideEffects(pos, state);
     }
@@ -312,6 +358,7 @@ final class NodeManipulatorBlockEntity extends TcBlockEntity {
         super.loadAdditional(input);
         owner = input.read("owner", UUIDUtil.CODEC).orElse(null);
         portal = input.getBooleanOr("portal", false);
+        transferringVis = input.getBooleanOr("transferring_vis", false);
         workTicks = Math.clamp(input.getIntOr("work_ticks", 0), 0, portal ? 400 : 300);
         wand = input.read("wand", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
         for (int i = 0; i < charge.length; i++) {
@@ -324,6 +371,7 @@ final class NodeManipulatorBlockEntity extends TcBlockEntity {
         super.saveAdditional(output);
         output.storeNullable("owner", UUIDUtil.CODEC, owner);
         output.putBoolean("portal", portal);
+        output.putBoolean("transferring_vis", transferringVis);
         output.putInt("work_ticks", workTicks);
         output.store("wand", ItemStack.OPTIONAL_CODEC, wand);
         for (int i = 0; i < charge.length; i++) {

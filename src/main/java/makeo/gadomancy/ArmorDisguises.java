@@ -74,10 +74,10 @@ public final class ArmorDisguises {
         ResearchCategories.addResearch(new ResearchItem(RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.SLIME, 8).add(Aspect.MAGIC, 4).add(Aspect.ARMOR, 4),
             -2, 0, 1, SAMPLE
-        ).setParents("INFUSIONENCHANTMENT").setConcealed().setPages(
+        ).setParents(ResearchLinks.link("INFUSIONENCHANTMENT")).setConcealed().setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.ARMORDISGUISE.1"),
             ResearchPage.infusion(DISGUISE), ResearchPage.infusion(INVISIBLE),
-            ResearchPage.text("tc.research_page.GADOMANCY.ARMORDISGUISE.2")
+            ResearchPage.text("tc.research_page.GADOMANCY.ARMORDISGUISE.4")
         ));
     }
 

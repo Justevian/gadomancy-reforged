@@ -11,6 +11,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectList;
+import thaumcraft.crafting.CompoundRecipe;
 import thaumcraft.crafting.CraftingRecipeRef;
 import thaumcraft.crafting.CrucibleRecipe;
 import thaumcraft.crafting.InfusionRecipe;
@@ -59,12 +60,26 @@ final class AuraCores {
 
         AspectList discovery = new AspectList().add(Aspect.AURA, 22).add(Aspect.MAGIC, 10);
         PRIMALS.forEach(aspect -> discovery.add(aspect, 8));
+        var pages = new ArrayList<>(List.of(
+            ResearchPage.text("tc.research_page.GADOMANCY.AURA_CORE.1"),
+            ResearchPage.infusion(INFUSION),
+            ResearchPage.text("tc.research_page.GADOMANCY.AURA_CORE.3")));
+        for (int i = 0; i <= PRIMALS.size(); i++) {
+            boolean mixed = i == PRIMALS.size();
+            String variant = mixed ? "mixed" : VARIANTS.get(i);
+            String diagram = "gadomancy:attune_aura_core_" + variant;
+            var cost = new AspectList();
+            if (mixed) PRIMALS.forEach(aspect -> cost.add(aspect, 14));
+            else cost.add(PRIMALS.get(i), 84);
+            var cells = new ArrayList<>(Collections.nCopies(18, TcStack.NONE));
+            cells.set(4, TcStack.withData("thaumcraft:wand", 1, java.util.Map.of("cap", "gold", "rod", "greatwood")));
+            cells.set(13, TcStack.of("thaumcraft:" + variant + "_crystal_cluster"));
+            cells.set(14, blank);
+            TcRecipes.register(new CompoundRecipe(diagram, RESEARCH, cost, 3, 2, 3, cells));
+            pages.add(ResearchPage.compound(diagram));
+        }
         ResearchCategories.addResearch(new ResearchItem(RESEARCH, Gadomancy.MOD_ID, discovery, -1, 6, 2, blank)
-            .setSpecial().setParents("INFUSION", "THAUMIUM").setPages(
-                ResearchPage.text("tc.research_page.GADOMANCY.AURA_CORE.1"),
-                ResearchPage.infusion(INFUSION),
-                ResearchPage.text("tc.research_page.GADOMANCY.AURA_CORE.3")
-            )
+            .setSpecial().setConcealed().setParents("INFUSION", "THAUMIUM").setPages(pages.toArray(ResearchPage[]::new))
         );
 
         List<String> washRecipes = new ArrayList<>();
@@ -84,7 +99,7 @@ final class AuraCores {
         ResearchCategories.addResearch(new ResearchItem(CLEAN_RESEARCH, Gadomancy.MOD_ID,
             new AspectList().add(Aspect.HEAL, 8).add(Aspect.AURA, 6).add(Aspect.MAGIC, 8).add(Aspect.WATER, 10),
             1, 5, 1, blank
-        ).setSecondary().setParents(RESEARCH).setPages(
+        ).setSecondary().setConcealed().setParents(RESEARCH).setPages(
             ResearchPage.text("tc.research_page.GADOMANCY.CLEAN_AURA_CORE.1"),
             ResearchPage.crucible(washRecipes.toArray(String[]::new)),
             ResearchPage.crafting(salvageRecipes.toArray(String[]::new))
