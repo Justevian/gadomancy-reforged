@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -38,13 +38,13 @@ public final class Gadomancy {
     private static final String RECIPE = "gadomancy:element_darkness";
     private static final String DROPPER_RESEARCH = "GADOMANCY.ARCANEDROPPER";
     private static final String DROPPER_RECIPE = "gadomancy:arcane_dropper";
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
+    private static final PortRegistration.Blocks BLOCKS = new PortRegistration.Blocks(MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(MOD_ID);
     private static final DeferredRegister<CreativeModeTab> TABS =
         DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
 
     private static final DeferredItem<DarknessElementItem> DARKNESS = ITEMS.registerItem(
-        "element_darkness", DarknessElementItem::new, () -> new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)
+        "element_darkness", DarknessElementItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)
     );
 
     private static final DeferredBlock<ArcaneDropperBlock> DROPPER = BLOCKS.registerBlock(
@@ -111,7 +111,7 @@ public final class Gadomancy {
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, blockEntity, side) -> {
+        event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, pos, state, blockEntity, side) -> {
             Direction facing = state.getValue(ArcaneDropperBlock.FACING);
             Direction.Axis flatAxis = facing.getAxis().isVertical() ? Direction.Axis.Z : Direction.Axis.Y;
             if (level instanceof ServerLevel server
@@ -139,8 +139,8 @@ public final class Gadomancy {
 
             ResearchCategories.registerCategory(
                 MOD_ID,
-                Identifier.fromNamespaceAndPath(MOD_ID, "textures/item/category_icon.png"),
-                Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/gui_researchback.png")
+                ResourceLocation.fromNamespaceAndPath(MOD_ID, "textures/item/category_icon.png"),
+                ResourceLocation.fromNamespaceAndPath(MOD_ID, "textures/gui/gui_researchback.png")
             );
             ResearchLinks.register();
             registerDropperResearch();

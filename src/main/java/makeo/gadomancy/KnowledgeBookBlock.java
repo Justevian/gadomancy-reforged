@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
@@ -21,11 +21,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.infusion.PedestalBlockEntity;
 import thaumcraft.registry.ModItems;
 
-final class KnowledgeBookBlock extends Block implements EntityBlock {
+final class KnowledgeBookBlock extends PortEntityBlock implements EntityBlock {
     private static final VoxelShape SHAPE = Block.box(1, 1, 1, 15, 8, 15);
 
     KnowledgeBookBlock(Properties properties) {
@@ -38,12 +38,11 @@ final class KnowledgeBookBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
-        Direction side, BlockPos neighborPos, BlockState neighbor, RandomSource random) {
+    protected BlockState updateShape(BlockState state, Direction side, BlockState neighbor, net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         if (side.getAxis().isVertical() && !canSurvive(state, level, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
-        return super.updateShape(state, level, ticks, pos, side, neighborPos, neighbor, random);
+        return super.updateShape(state, side, neighbor, level, pos, neighborPos);
     }
 
     @Override
@@ -75,7 +74,7 @@ final class KnowledgeBookBlock extends Block implements EntityBlock {
             }
             return InteractionResult.SUCCESS;
         }
-        return ModItems.THAUMONOMICON.get().use(level, player, InteractionHand.MAIN_HAND);
+        return ModItems.THAUMONOMICON.get().use(level, player, InteractionHand.MAIN_HAND).getResult();
     }
 
     @Override
@@ -84,7 +83,7 @@ final class KnowledgeBookBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction side) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         return level.getBlockEntity(pos) instanceof KnowledgeBookBlockEntity book ? book.signal() : 0;
     }
 }

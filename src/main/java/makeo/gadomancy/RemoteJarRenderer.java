@@ -24,4 +24,21 @@ final class RemoteJarRenderer {
         event.registerBlockEntityRenderer(NodeManipulators.PORTAL_TYPE.get(), VoidwalkerPortalRenderer::new);
         AuraStructureBlock.visualTick = AuraStructureVisuals::tick;
     }
+    @SubscribeEvent
+    static void creativeNodeRendering(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
+        var game = net.minecraft.client.Minecraft.getInstance();
+        var renderer = new net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer(game.getBlockEntityRenderDispatcher(), game.getEntityModels()) {
+            @Override public void renderByItem(net.minecraft.world.item.ItemStack stack, net.minecraft.world.item.ItemDisplayContext context,
+                com.mojang.blaze3d.vertex.PoseStack poses, net.minecraft.client.renderer.MultiBufferSource buffers, int light, int overlay) {
+                thaumcraft.client.render.NodeItemRenderer.render(poses, buffers);
+            }
+        };
+        for (var entry : net.minecraft.core.registries.BuiltInRegistries.ITEM.entrySet()) {
+            if (entry.getValue() instanceof CreativeNodeItem) {
+                event.registerItem(new net.neoforged.neoforge.client.extensions.common.IClientItemExtensions() {
+                    @Override public net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer getCustomRenderer() { return renderer; }
+                }, entry.getValue());
+            }
+        }
+    }
 }

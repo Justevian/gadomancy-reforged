@@ -9,11 +9,13 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import makeo.gadomancy.PortNbt;
+
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectKeys;
 import thaumcraft.aspect.AspectList;
@@ -179,15 +181,17 @@ final class PylonBlockEntity extends AuraStructureBlockEntity {
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var input = new PortNbt.Input(tag, registries);
+        super.loadAdditional(tag, registries);
         crystal = input.read("crystal", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
         amount = Mth.clamp(input.getIntOr("amount", 0), 0, BUFFER);
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var output = new PortNbt.Output(tag, registries);
+        super.saveAdditional(tag, registries);
         output.store("crystal", ItemStack.OPTIONAL_CODEC, crystal);
         output.putInt("amount", amount);
     }

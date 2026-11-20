@@ -1,7 +1,7 @@
 package makeo.gadomancy;
 
 import java.util.List;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import thaumcraft.aspect.Aspect;
@@ -17,13 +17,13 @@ import thaumcraft.research.ResearchPage;
 public final class ThaumicSight {
     private static final String RESEARCH = "GADOMANCY.REVEALER";
     private static final String RECIPE = "gadomancy:thaumic_sight";
-    private static final Identifier ENCHANTMENT = Identifier.parse(RECIPE);
+    private static final ResourceLocation ENCHANTMENT = ResourceLocation.parse(RECIPE);
 
     private ThaumicSight() {}
 
     public static boolean reveals(ItemStack helmet) {
         return EnchantmentHelper.getEnchantmentsForCrafting(helmet).keySet().stream()
-            .anyMatch(holder -> holder.unwrapKey().filter(key -> key.identifier().equals(ENCHANTMENT)).isPresent());
+            .anyMatch(holder -> holder.unwrapKey().filter(key -> key.location().equals(ENCHANTMENT)).isPresent());
     }
 
     static void registerResearch() {

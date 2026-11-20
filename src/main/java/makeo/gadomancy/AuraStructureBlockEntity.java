@@ -5,12 +5,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.blockentity.TcBlockEntity;
 import thaumcraft.essentia.EssentiaTransport;
 
-abstract class AuraStructureBlockEntity extends TcBlockEntity implements EssentiaTransport {
+abstract class AuraStructureBlockEntity extends TcBlockEntity implements EssentiaTransport, PortEntityBlock.Removal {
     AuraStructureBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -26,12 +26,11 @@ abstract class AuraStructureBlockEntity extends TcBlockEntity implements Essenti
     }
 
     @Override
-    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+    public void onBlockRemoved(BlockPos pos, BlockState state) {
         if (level instanceof ServerLevel server && state.getBlock() instanceof AuraStructureBlock block
             && state.getValue(AuraStructureBlock.PART) == block.kind.controllerPart) {
             onDisassembled(server);
         }
-        super.preRemoveSideEffects(pos, state);
     }
 
     @Override

@@ -14,7 +14,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectList;
 import thaumcraft.crafting.ShapedArcaneRecipe;
@@ -30,8 +30,8 @@ final class ArcanePackagers {
     private static final String ID = "arcane_packager";
     private static final String RECIPE = "gadomancy:" + ID;
     private static final String RESEARCH = "GADOMANCY.ARCANE_PACKAGER";
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Gadomancy.MOD_ID);
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Blocks BLOCKS = new PortRegistration.Blocks(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> ENTITIES =
         DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Gadomancy.MOD_ID);
 
@@ -40,14 +40,14 @@ final class ArcanePackagers {
         MENUS.register(ID, () -> Menus.simple(PackagerMenu::new));
 
     private static final DeferredBlock<PackagerBlock> BLOCK = BLOCKS.registerBlock(ID, PackagerBlock::new,
-        properties -> properties.strength(3.5F).requiresCorrectToolForDrops().pushReaction(PushReaction.IMMOVEABLE));
+        properties -> properties.strength(3.5F).requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK));
     static final DeferredItem<BlockItem> ITEM = ITEMS.registerSimpleBlockItem(BLOCK);
     static final DeferredItem<ArcanePackageItem> PACKAGE = ITEMS.registerItem("arcane_package", ArcanePackageItem::new,
         properties -> properties.stacksTo(1).rarity(Rarity.UNCOMMON));
     static final DeferredItem<ArcanePackageItem> DISGUISED_PACKAGE = ITEMS.registerItem("disguised_package", ArcanePackageItem::new,
         properties -> properties.stacksTo(1));
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PackagerBlockEntity>> TYPE =
-        ENTITIES.register(ID, () -> new BlockEntityType<>(PackagerBlockEntity::new, BLOCK.get()));
+        ENTITIES.register(ID, () -> BlockEntityType.Builder.of(PackagerBlockEntity::new, BLOCK.get()).build(null));
 
     private ArcanePackagers() {
     }
@@ -61,9 +61,9 @@ final class ArcanePackagers {
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.Item.BLOCK, TYPE.get(),
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TYPE.get(),
             (entity, side) -> side != null && entity.getSlotsForFace(side).length != 0
-                ? new WorldlyContainerWrapper(entity, side) : null);
+                ? new SidedInvWrapper(entity, side) : null);
     }
 
     static void registerResearch() {

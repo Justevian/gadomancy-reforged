@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectList;
 import thaumcraft.crafting.InfusionRecipe;
@@ -161,7 +161,7 @@ public final class FamiliarRecipes {
             }
         }
         ResearchItem research = new ResearchItem(augment.research(), Gadomancy.MOD_ID, discovery, augment.column,
-            augment.row, 2, Identifier.parse("gadomancy:textures/misc/familiar_" + augment.icon.toLowerCase(Locale.ROOT) + ".png"))
+            augment.row, 2, ResourceLocation.parse("gadomancy:textures/misc/familiar_" + augment.icon.toLowerCase(Locale.ROOT) + ".png"))
             .setConcealed().setPages(pages.toArray(ResearchPage[]::new));
         if (augment == FamiliarAugment.SPEED) {
             research.setParents(FamiliarAugment.DAMAGE.research(), FamiliarAugment.RANGE.research(), "PRIMPEARL");

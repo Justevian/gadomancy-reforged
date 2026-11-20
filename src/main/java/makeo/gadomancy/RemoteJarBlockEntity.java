@@ -14,9 +14,11 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import makeo.gadomancy.PortNbt;
+
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -84,8 +86,9 @@ final class RemoteJarBlockEntity extends MountedJarBlockEntity {
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var input = new PortNbt.Input(tag, registries);
+        super.loadAdditional(tag, registries);
         UUID id = input.read("network", UUIDUtil.CODEC).orElse(null);
         if (!Objects.equals(network, id)) {
             leaveNetwork();
@@ -94,8 +97,9 @@ final class RemoteJarBlockEntity extends MountedJarBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var output = new PortNbt.Output(tag, registries);
+        super.saveAdditional(tag, registries);
         output.storeNullable("network", UUIDUtil.CODEC, network);
     }
 

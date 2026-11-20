@@ -23,7 +23,7 @@ public final class SilverwoodGolems {
     static final String ID = "gadomancy:silverwood_golem";
     static final String RESEARCH = "GADOMANCY.GOLEMSILVERWOOD";
     private static final String MARKER = "~";
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     static final DeferredItem<GolemPlacerItem> ITEM = ITEMS.registerItem("silverwood_golem",
         properties -> new GolemPlacerItem(properties, GolemType.WOOD));
 

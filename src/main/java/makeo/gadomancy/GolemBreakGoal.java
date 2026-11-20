@@ -45,7 +45,7 @@ public final class GolemBreakGoal extends Goal {
         for (Marker marker : golem.getMarkers()) {
             BlockPos pos = marker.pos();
             if (!marker.inLevel(server) || !server.hasChunkAt(pos) || !server.mayInteract(owner, pos)
-                || !pos.closerThan(golem.getHomePosition(), range)) {
+                || !pos.closerThan(golem.getRestrictCenter(), range)) {
                 continue;
             }
             BlockState candidate = server.getBlockState(pos);

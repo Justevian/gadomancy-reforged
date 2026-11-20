@@ -1,7 +1,7 @@
 package makeo.gadomancy;
 
 import java.util.Locale;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectList;
 

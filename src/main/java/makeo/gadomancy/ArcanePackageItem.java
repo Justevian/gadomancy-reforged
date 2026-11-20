@@ -17,20 +17,20 @@ final class ArcanePackageItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         ItemContainerContents contents = stack.get(DataComponents.CONTAINER);
-        if (contents == null || contents.size() == 0) {
-            return InteractionResult.PASS;
+        if (contents == null || contents.stream().findAny().isEmpty()) {
+            return net.minecraft.world.InteractionResultHolder.pass(stack);
         }
         if (level instanceof ServerLevel server) {
             stack.shrink(1);
-            contents.nonEmptyItemCopyStream().forEach(item -> {
+            contents.stream().forEach(item -> {
                 if (!player.addItem(item)) {
                     Containers.dropItemStack(server, player.getX(), player.getY(), player.getZ(), item);
                 }
             });
         }
-        return InteractionResult.SUCCESS;
+        return net.minecraft.world.InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 }

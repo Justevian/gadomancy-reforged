@@ -39,8 +39,8 @@ final class EnervationEmitters {
     private static final String RECIPE = "gadomancy:" + ID;
     private static final String RESEARCH = "GADOMANCY.BLOCK_PROTECTOR";
     private static final String POTION_KIND = "gadomancy:weakness_potion";
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Gadomancy.MOD_ID);
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Blocks BLOCKS = new PortRegistration.Blocks(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
         DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Gadomancy.MOD_ID);
 
@@ -50,7 +50,7 @@ final class EnervationEmitters {
     );
     static final DeferredItem<BlockItem> ITEM = ITEMS.registerSimpleBlockItem(BLOCK);
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnervationEmitterBlockEntity>> TYPE =
-        BLOCK_ENTITIES.register(ID, () -> new BlockEntityType<>(EnervationEmitterBlockEntity::new, BLOCK.get()));
+        BLOCK_ENTITIES.register(ID, () -> BlockEntityType.Builder.of(EnervationEmitterBlockEntity::new, BLOCK.get()).build(null));
 
     private EnervationEmitters() {
     }

@@ -30,8 +30,8 @@ final class AuraStructures {
     private static final String PYLON_ID = "aura_pylon";
     private static final String CAP_ID = "aura_pylon_cap";
     private static final String PEDESTAL_ID = "ancient_pedestal";
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Gadomancy.MOD_ID);
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Blocks BLOCKS = new PortRegistration.Blocks(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
         DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Gadomancy.MOD_ID);
 
@@ -48,18 +48,18 @@ final class AuraStructures {
     );
 
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CondenserBlockEntity>> CONDENSER_TYPE =
-        BLOCK_ENTITIES.register(CONDENSER_ID, () -> new BlockEntityType<>(CondenserBlockEntity::new, CONDENSER.get()));
+        BLOCK_ENTITIES.register(CONDENSER_ID, () -> BlockEntityType.Builder.of(CondenserBlockEntity::new, CONDENSER.get()).build(null));
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PylonBlockEntity>> PYLON_TYPE =
-        BLOCK_ENTITIES.register(PYLON_ID, () -> new BlockEntityType<>(PylonBlockEntity::new, PYLON.get(), CAP.get()));
+        BLOCK_ENTITIES.register(PYLON_ID, () -> BlockEntityType.Builder.of(PylonBlockEntity::new, PYLON.get(), CAP.get()).build(null));
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AncientPedestalBlock.AncientPedestalBlockEntity>> PEDESTAL_TYPE =
-        BLOCK_ENTITIES.register(PEDESTAL_ID, () -> new BlockEntityType<>(AncientPedestalBlock.AncientPedestalBlockEntity::new, ANCIENT_PEDESTAL.get()));
+        BLOCK_ENTITIES.register(PEDESTAL_ID, () -> BlockEntityType.Builder.of(AncientPedestalBlock.AncientPedestalBlockEntity::new, ANCIENT_PEDESTAL.get()).build(null));
 
     private AuraStructures() {
     }
 
     private static DeferredBlock<AuraStructureBlock> structure(String id, AuraStructureBlock.Kind kind) {
         return BLOCKS.registerBlock(id, properties -> new AuraStructureBlock(properties, kind),
-            properties -> properties.strength(3.5F, 15).requiresCorrectToolForDrops().noOcclusion().pushReaction(PushReaction.IMMOVEABLE)
+            properties -> properties.strength(3.5F, 15).requiresCorrectToolForDrops().noOcclusion().pushReaction(PushReaction.BLOCK)
                 .lightLevel(state -> state.getValue(AuraStructureBlock.PART) > 0 ? 7 : 0));
     }
 
@@ -197,7 +197,7 @@ final class AuraStructures {
         ));
         ResearchCategories.addResearch(new ResearchItem("GADOMANCY.AURA_EFFECTS", Gadomancy.MOD_ID,
             new AspectList().add(Aspect.AURA, 6).add(Aspect.MIND, 8).add(Aspect.MAGIC, 4).add(Aspect.ORDER, 4),
-            1, 10, 2, net.minecraft.resources.Identifier.parse("thaumcraft:textures/misc/r_aspects.png")
+            1, 10, 2, net.minecraft.resources.ResourceLocation.parse("thaumcraft:textures/misc/r_aspects.png")
         ).setConcealed().setSecondary().setParents(PYLON_RESEARCH).setPages(
             AuraNotes.pages()
         ));

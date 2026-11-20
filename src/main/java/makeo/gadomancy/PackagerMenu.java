@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 final class PackagerMenu extends AbstractContainerMenu {
     static final int USE_ESSENTIA = 0;

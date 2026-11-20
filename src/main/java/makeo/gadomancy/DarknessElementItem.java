@@ -19,9 +19,9 @@ final class DarknessElementItem extends Item {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, ServerLevel level, Entity carrier, EquipmentSlot slot) {
-        if ((level.getGameTime() & 15) == 0) {
-            applyBlindness(level, carrier.position());
+    public void inventoryTick(ItemStack stack, net.minecraft.world.level.Level level, Entity carrier, int slot, boolean selected) {
+        if (level instanceof ServerLevel server && (level.getGameTime() & 15) == 0) {
+            applyBlindness(server, carrier.position());
         }
     }
 

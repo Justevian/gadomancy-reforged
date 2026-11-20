@@ -21,12 +21,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.research.ResearchGate;
 import thaumcraft.wand.WandInteractable;
 import thaumcraft.wand.WandItem;
 
-final class NodeManipulatorBlock extends Block implements EntityBlock, WandInteractable {
+final class NodeManipulatorBlock extends PortEntityBlock implements EntityBlock, WandInteractable {
     private static final VoxelShape SHAPE = Shapes.or(box(0, 0, 0, 16, 4, 16),
         box(2, 4, 2, 14, 8, 14), box(4, 8, 4, 12, 16, 12));
 
@@ -91,9 +91,9 @@ final class NodeManipulatorBlock extends Block implements EntityBlock, WandInter
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos,
+    protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos,
         Player player, InteractionHand hand, BlockHitResult hit) {
-        return useManipulator(level, pos, player, held);
+        return PortInteractions.item(useManipulator(level, pos, player, held));
     }
 
     @Override

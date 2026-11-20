@@ -3,7 +3,7 @@ package makeo.gadomancy.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import makeo.gadomancy.SilverwoodGolems;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,7 +24,7 @@ abstract class SilverwoodGolemRendererMixin {
         at = @At("TAIL"))
     private void gadomancy$applySilverwoodTexture(GolemBase golem, GolemRenderState state, float partialTicks, CallbackInfo ci) {
         if (SilverwoodGolems.isSilverwood(golem)) {
-            state.texture = Identifier.parse("gadomancy:textures/entity/golem_silverwood.png");
+            state.texture = ResourceLocation.parse("gadomancy:textures/entity/golem_silverwood.png");
             state.decoration = state.decoration.replace("~", "");
         }
     }

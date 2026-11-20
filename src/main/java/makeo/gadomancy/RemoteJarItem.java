@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
+
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -42,25 +42,25 @@ final class RemoteJarItem extends MountedJarItem {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown() || !stack.has(RemoteJars.NETWORK.get())) {
-            return InteractionResult.PASS;
+            return net.minecraft.world.InteractionResultHolder.pass(stack);
         }
         if (!level.isClientSide()) {
             stack.remove(RemoteJars.NETWORK.get());
             player.sendSystemMessage(Component.translatable("message.gadomancy.remote_jar.unlinked"));
         }
-        return InteractionResult.SUCCESS;
+        return net.minecraft.world.InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> lines, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context,  java.util.List<Component> lines, TooltipFlag flag) {
         UUID network = stack.get(RemoteJars.NETWORK.get());
         if (network != null) {
-            lines.accept(Component.translatable("tooltip.gadomancy.remote_jar.network", shortName(network)).withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable("tooltip.gadomancy.remote_jar.network", shortName(network)).withStyle(ChatFormatting.GRAY));
         }
-        super.appendHoverText(stack, context, display, lines, flag);
+        super.appendHoverText(stack, context, lines, flag);
     }
 
     private static String shortName(UUID network) {

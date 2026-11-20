@@ -10,11 +10,13 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import makeo.gadomancy.PortNbt;
+
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.blockentity.TcBlockEntity;
 import thaumcraft.essentia.Essentia;
@@ -142,16 +144,18 @@ final class EnervationEmitterBlockEntity extends TcBlockEntity implements Essent
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var input = new PortNbt.Input(tag, registries);
+        super.loadAdditional(tag, registries);
         essentia = Mth.clamp(input.getIntOr("essentia", 0), 0, BUFFER);
         range = Mth.clamp(input.getIntOr("range", 0), 0, MAX_RANGE);
         saturation = Mth.clamp(input.getIntOr("saturation", 0), 0, MAX_RANGE);
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var output = new PortNbt.Output(tag, registries);
+        super.saveAdditional(tag, registries);
         output.putInt("essentia", essentia);
         output.putInt("range", range);
         output.putInt("saturation", saturation);

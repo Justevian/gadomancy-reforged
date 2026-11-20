@@ -79,7 +79,7 @@ public final class RunicGolemShields {
     }
 
     public static void preserve(GolemBase golem, ItemStack stack) {
-        if (golem.getPersistentData().getBooleanOr(SHIELD, false)) {
+        if (makeo.gadomancy.PortNbt.getBooleanOr(golem.getPersistentData(), SHIELD, false)) {
             var tags = new HashMap<>(InfusionKeys.TAGS.getOrDefault(stack, Map.of()));
             tags.put(SHIELD, "true");
             InfusionKeys.TAGS.set(stack, Map.copyOf(tags));
@@ -100,13 +100,13 @@ public final class RunicGolemShields {
             return;
         }
         var data = golem.getPersistentData();
-        if (!data.getBooleanOr(SHIELD, false)) {
+        if (!makeo.gadomancy.PortNbt.getBooleanOr(data, SHIELD, false)) {
             return;
         }
         long tick = level.getGameTime();
-        long elapsed = Math.max(0, tick - data.getLongOr(LAST_UPDATE, tick));
+        long elapsed = Math.max(0, tick - makeo.gadomancy.PortNbt.getLongOr(data, LAST_UPDATE, tick));
         int capacity = (int) (SilverwoodGolems.isSilverwood(golem) ? golem.getMaxHealth() : golem.getMaxHealth() / 2.6F);
-        float charge = Math.min(capacity, data.getFloatOr(CHARGE, 0) + elapsed * 0.02F);
+        float charge = Math.min(capacity, makeo.gadomancy.PortNbt.getFloatOr(data, CHARGE, 0) + elapsed * 0.02F);
         float absorbed = Math.min(event.getAmount(), (int) charge);
         if (absorbed <= 0) {
             return;

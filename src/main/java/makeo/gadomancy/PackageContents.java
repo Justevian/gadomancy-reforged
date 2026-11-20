@@ -44,11 +44,11 @@ final class PackageContents {
             return false;
         }
         ItemContainerContents contents = stack.get(DataComponents.CONTAINER);
-        if (contents != null && !contents.nonEmptyItemCopyStream().allMatch(item -> fitsDepth(item, nested, depth + 1))) {
+        if (contents != null && !contents.stream().allMatch(item -> fitsDepth(item, nested, depth + 1))) {
             return false;
         }
         BundleContents bundle = stack.get(DataComponents.BUNDLE_CONTENTS);
-        return bundle == null || bundle.itemCopies().allMatch(item -> fitsDepth(item, nested, depth + 1));
+        return bundle == null || bundle.itemCopyStream().allMatch(item -> fitsDepth(item, nested, depth + 1));
     }
 
     private static final class SizeLimit extends OutputStream {

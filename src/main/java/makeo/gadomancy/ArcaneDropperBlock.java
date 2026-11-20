@@ -72,7 +72,7 @@ final class ArcaneDropperBlock extends Block implements WandInteractable {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction side) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         List<ItemEntity> items = items(level, pos, state.getValue(FACING));
         double fullness = 0;
         int stacks = 0;

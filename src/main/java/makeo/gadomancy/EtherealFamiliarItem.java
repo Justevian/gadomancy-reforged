@@ -19,12 +19,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.component.TooltipDisplay;
+
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectList;
 import thaumcraft.item.bauble.VisAmuletItem;
@@ -39,7 +39,7 @@ import thaumcraft.wand.VisStorage;
 import thaumcraft.wand.WandItem;
 
 final class EtherealFamiliarItem extends Item implements Bauble {
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     static final DeferredItem<EtherealFamiliarItem> ITEM = ITEMS.registerItem("ethereal_familiar",
         EtherealFamiliarItem::new, props -> props.stacksTo(1).rarity(Rarity.EPIC));
     private static final String ASPECT = "gadomancy_familiar_aspect";
@@ -55,7 +55,7 @@ final class EtherealFamiliarItem extends Item implements Bauble {
     }
 
     static Aspect aspect(ItemStack stack) {
-        Aspect aspect = Aspect.getAspect(data(stack).getStringOr(ASPECT, Aspect.MAGIC.getTag()));
+        Aspect aspect = Aspect.getAspect(makeo.gadomancy.PortNbt.getStringOr(data(stack), ASPECT, Aspect.MAGIC.getTag()));
         return aspect == null ? Aspect.MAGIC : aspect;
     }
 
@@ -107,7 +107,7 @@ final class EtherealFamiliarItem extends Item implements Bauble {
     }
 
     private static int rank(CompoundTag state, FamiliarAugment augment) {
-        return Math.clamp(state.getIntOr(rankKey(augment), 0), 0, augment.maximum);
+        return Math.clamp(makeo.gadomancy.PortNbt.getIntOr(state, rankKey(augment), 0), 0, augment.maximum);
     }
 
     private static String rankKey(FamiliarAugment augment) {
@@ -120,14 +120,14 @@ final class EtherealFamiliarItem extends Item implements Bauble {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
-        Consumer<Component> builder, TooltipFlag flag) {
-        builder.accept(Component.literal(aspect(stack).getName()));
+    public void appendHoverText(ItemStack stack, TooltipContext context,
+        java.util.List<Component> builder, TooltipFlag flag) {
+        builder.add(Component.literal(aspect(stack).getName()));
         CompoundTag state = data(stack);
         for (FamiliarAugment augment : AUGMENTS) {
             int rank = rank(state, augment);
             if (rank > 0) {
-                builder.accept(Component.translatable("tc.research_name." + augment.research())
+                builder.add(Component.translatable("tc.research_name." + augment.research())
                     .append(" ").append(switch (rank) { case 3 -> "III"; case 2 -> "II"; default -> "I"; }));
             }
         }
@@ -141,7 +141,7 @@ final class EtherealFamiliarItem extends Item implements Bauble {
         }
         long now = level.getGameTime();
         Vec3 origin = orbit(player, now, 1F);
-        if (level.getDifficulty() == Difficulty.PEACEFUL || now < player.getPersistentData().getLongOr(NEXT_ATTACK, 0)) {
+        if (level.getDifficulty() == Difficulty.PEACEFUL || now < makeo.gadomancy.PortNbt.getLongOr(player.getPersistentData(), NEXT_ATTACK, 0)) {
             return;
         }
 
@@ -221,14 +221,14 @@ final class EtherealFamiliarItem extends Item implements Bauble {
     private static void attack(ServerLevel level, ServerPlayer player, Vec3 origin, LivingEntity target, float damage,
         @Nullable FamiliarAugment element, int rank) {
         DamageSource source = level.damageSources().indirectMagic(player, player);
-        if (!target.hurtServer(level, source, damage)) {
+        if (!target.hurt(source, damage)) {
             return;
         }
         if (element != null) {
             switch (element) {
                 case SHOCK -> {
                     if (level.getRandom().nextBoolean()) {
-                        target.knockback(0.4 * rank, player.getX() - target.getX(), player.getZ() - target.getZ(), source, damage);
+                        target.knockback(0.4 * rank, player.getX() - target.getX(), player.getZ() - target.getZ());
                     }
                 }
                 case FIRE -> {
@@ -245,7 +245,7 @@ final class EtherealFamiliarItem extends Item implements Bauble {
                 }
                 case WEAKNESS -> {
                     target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 600, rank == 3 ? 1 : 0), player);
-                    target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 600, rank == 3 ? 1 : 0), player);
+                    target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 600, rank == 3 ? 1 : 0), player);
                 }
                 default -> {}
             }

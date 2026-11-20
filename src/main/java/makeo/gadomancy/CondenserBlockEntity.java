@@ -11,11 +11,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import makeo.gadomancy.PortNbt;
+
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectList;
 import thaumcraft.aspect.AspectSource;
@@ -32,7 +34,7 @@ final class CondenserBlockEntity extends AuraStructureBlockEntity implements Asp
     private static final int MAX_UPGRADES = 8;
     private static final int CAPACITY_PER_UPGRADE = (MAX_CAPACITY_PER_ASPECT - BASE_CAPACITY_PER_ASPECT) / MAX_UPGRADES;
     private static final int UPGRADE_TICKS = 400;
-    private static final DustParticleOptions UPGRADE_DUST = new DustParticleOptions(0x512574, 0.8F);
+    private static final DustParticleOptions UPGRADE_DUST = new DustParticleOptions(new org.joml.Vector3f(0x51 / 255F, 0x25 / 255F, 0x74 / 255F), 0.8F);
     private AspectList essentia = new AspectList();
     private int upgrades;
     private @Nullable BlockPos pedestal;
@@ -298,15 +300,17 @@ final class CondenserBlockEntity extends AuraStructureBlockEntity implements Asp
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var input = new PortNbt.Input(tag, registries);
+        super.loadAdditional(tag, registries);
         essentia = input.read("essentia", AspectList.CODEC).orElseGet(AspectList::new);
         upgrades = Mth.clamp(input.getIntOr("upgrades", 0), 0, MAX_UPGRADES);
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var output = new PortNbt.Output(tag, registries);
+        super.saveAdditional(tag, registries);
         output.store("essentia", AspectList.CODEC, essentia);
         output.putInt("upgrades", upgrades);
     }

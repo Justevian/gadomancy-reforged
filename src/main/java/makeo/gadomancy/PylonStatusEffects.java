@@ -1,7 +1,7 @@
 package makeo.gadomancy;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -28,8 +28,8 @@ public final class PylonStatusEffects {
         EFFECTS.register(bus);
     }
 
-    private static Identifier id(String path) {
-        return Identifier.fromNamespaceAndPath(Gadomancy.MOD_ID, path);
+    private static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(Gadomancy.MOD_ID, path);
     }
 
     private static final class PassiveEffect extends MobEffect {

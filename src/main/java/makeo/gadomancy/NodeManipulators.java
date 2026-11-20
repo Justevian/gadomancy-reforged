@@ -35,8 +35,8 @@ final class NodeManipulators {
     private static final String RANDOMIZATION_ID = "gadomancy:randomization_focus";
     private static final String REDIRECTION_ID = "gadomancy:redirection_focus";
 
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Gadomancy.MOD_ID);
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Blocks BLOCKS = new PortRegistration.Blocks(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> ENTITIES =
         DeferredRegister.create(net.minecraft.core.registries.Registries.BLOCK_ENTITY_TYPE, Gadomancy.MOD_ID);
     static final DeferredBlock<NodeManipulatorBlock> MANIPULATOR =
@@ -51,11 +51,11 @@ final class NodeManipulators {
         properties -> new ManipulatorPillarBlock(properties, true), properties -> properties.strength(2.0F, 10.0F).noOcclusion());
     static final DeferredBlock<VoidwalkerPortalBlock> PORTAL =
         BLOCKS.registerBlock("voidwalker_portal", VoidwalkerPortalBlock::new,
-            properties -> properties.noCollision().noLootTable().strength(-1F).lightLevel(state -> 11));
+            properties -> properties.noCollission().noLootTable().strength(-1F).lightLevel(state -> 11));
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NodeManipulatorBlockEntity>> TYPE =
-        ENTITIES.register("node_manipulator", () -> new BlockEntityType<>(NodeManipulatorBlockEntity::new, MANIPULATOR.get()));
+        ENTITIES.register("node_manipulator", () -> BlockEntityType.Builder.of(NodeManipulatorBlockEntity::new, MANIPULATOR.get()).build(null));
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<VoidwalkerPortalBlockEntity>> PORTAL_TYPE =
-        ENTITIES.register("voidwalker_portal", () -> new BlockEntityType<>(VoidwalkerPortalBlockEntity::new, PORTAL.get()));
+        ENTITIES.register("voidwalker_portal", () -> BlockEntityType.Builder.of(VoidwalkerPortalBlockEntity::new, PORTAL.get()).build(null));
     static final List<DeferredItem<BlockItem>> CREATIVE_ITEMS = List.of(
         ITEMS.registerSimpleBlockItem(MANIPULATOR), ITEMS.registerSimpleBlockItem(RANDOMIZATION),
         ITEMS.registerSimpleBlockItem(REDIRECTION));

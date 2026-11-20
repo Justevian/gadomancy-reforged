@@ -1,1 +1,11 @@
-{"type":"minecraft:crafting_shapeless","ingredients":["gadomancy:aura_core_earth"],"result":{"id":"gadomancy:aura_core"}}
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "gadomancy:aura_core_earth"
+    }
+  ],
+  "result": {
+    "id": "gadomancy:aura_core"
+  }
+}

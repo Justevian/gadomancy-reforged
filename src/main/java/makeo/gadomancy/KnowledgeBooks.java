@@ -23,8 +23,8 @@ final class KnowledgeBooks {
     private static final String ID = "knowledge_book";
     private static final String RECIPE = "gadomancy:" + ID;
     private static final String RESEARCH = "GADOMANCY.KNOWLEDGE_BOOK";
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Gadomancy.MOD_ID);
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Blocks BLOCKS = new PortRegistration.Blocks(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> ENTITIES =
         DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Gadomancy.MOD_ID);
 
@@ -32,7 +32,7 @@ final class KnowledgeBooks {
         properties -> properties.strength(0.4F).noOcclusion().lightLevel(state -> 8));
     static final DeferredItem<BlockItem> ITEM = ITEMS.registerSimpleBlockItem(BLOCK);
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KnowledgeBookBlockEntity>> TYPE =
-        ENTITIES.register(ID, () -> new BlockEntityType<>(KnowledgeBookBlockEntity::new, BLOCK.get()));
+        ENTITIES.register(ID, () -> BlockEntityType.Builder.of(KnowledgeBookBlockEntity::new, BLOCK.get()).build(null));
 
     private KnowledgeBooks() {
     }

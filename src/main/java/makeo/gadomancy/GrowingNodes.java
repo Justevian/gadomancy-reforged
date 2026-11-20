@@ -16,7 +16,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectKeys;
 import thaumcraft.aspect.AspectList;
@@ -36,7 +36,7 @@ public final class GrowingNodes {
     private GrowingNodes() {}
 
     public static boolean isGrowing(BlockEntity entity) {
-        return entity.getPersistentData().getBooleanOr(GROWING, false);
+        return makeo.gadomancy.PortNbt.getBooleanOr(entity.getPersistentData(), GROWING, false);
     }
 
     public static void markGrowing(BlockEntity entity) {
@@ -54,7 +54,7 @@ public final class GrowingNodes {
 
     public static void readJar(ItemStack stack, thaumcraft.blockentity.NodeJarBlockEntity jar) {
         var data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        if (data.getBooleanOr(GROWING, false)) {
+        if (makeo.gadomancy.PortNbt.getBooleanOr(data, GROWING, false)) {
             markGrowing(jar);
             Tag capacity = data.get(BASE);
             if (capacity != null) {
@@ -104,7 +104,7 @@ public final class GrowingNodes {
         for (Wisp wisp : level.getEntitiesOfClass(Wisp.class, area)) {
             Aspect aspect = wisp.getAspect();
             if (aspect != null && wisp.isAlive() && canGrow(node, aspect) && pull(wisp, center)
-                && wisp.hurtServer(level, level.damageSources().magic(), 3F) && wisp.isDeadOrDying()) {
+                && wisp.hurt(level.damageSources().magic(), 3F) && wisp.isDeadOrDying()) {
                 grow(level, node, aspect);
             }
         }
@@ -114,7 +114,7 @@ public final class GrowingNodes {
         if (level.getDifficulty() != Difficulty.PEACEFUL && level.getRandom().nextInt(10) == 0) {
             for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class, new AABB(pos).inflate(6),
                 entity -> entity.isAlive() && !(entity instanceof Player player && (player.isCreative() || player.isSpectator())))) {
-                if (victim.hurtServer(level, level.damageSources().magic(), 2F)) {
+                if (victim.hurt(level.damageSources().magic(), 2F)) {
                     discover(level, pos, NodeManipulators.GROWING_AGGRESSION);
                 }
             }

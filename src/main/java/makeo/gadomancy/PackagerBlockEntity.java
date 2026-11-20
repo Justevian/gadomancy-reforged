@@ -13,16 +13,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import makeo.gadomancy.PortNbt;
+
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.blockentity.TcBlockEntity;
 import thaumcraft.essentia.Essentia;
 import thaumcraft.essentia.EssentiaTransport;
 
-final class PackagerBlockEntity extends TcBlockEntity implements WorldlyContainer, EssentiaTransport {
+final class PackagerBlockEntity extends TcBlockEntity implements WorldlyContainer, EssentiaTransport, PortEntityBlock.Removal {
     static final int SLOT_COUNT = 12;
     static final int LEATHER = 9;
     static final int STRING = 10;
@@ -200,7 +202,7 @@ final class PackagerBlockEntity extends TcBlockEntity implements WorldlyContaine
     }
 
     @Override
-    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+    public void onBlockRemoved(BlockPos pos, BlockState state) {
         if (level instanceof ServerLevel server) {
             Vec3 center = Vec3.atCenterOf(pos);
             for (int slot = 0; slot < SLOT_COUNT; slot++) {
@@ -210,7 +212,6 @@ final class PackagerBlockEntity extends TcBlockEntity implements WorldlyContaine
                 }
             }
         }
-        super.preRemoveSideEffects(pos, state);
     }
 
     @Override public boolean isConnectable(Direction face) { return face == Direction.UP; }
@@ -237,8 +238,9 @@ final class PackagerBlockEntity extends TcBlockEntity implements WorldlyContaine
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var input = new PortNbt.Input(tag, registries);
+        super.loadAdditional(tag, registries);
         Collections.fill(items, ItemStack.EMPTY);
         List<ItemStack> stored = input.read("items", ItemStack.OPTIONAL_CODEC.listOf()).orElse(List.of());
         for (int i = 0; i < Math.min(stored.size(), SLOT_COUNT); i++) {
@@ -252,8 +254,9 @@ final class PackagerBlockEntity extends TcBlockEntity implements WorldlyContaine
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var output = new PortNbt.Output(tag, registries);
+        super.saveAdditional(tag, registries);
         output.store("items", ItemStack.OPTIONAL_CODEC.listOf(), items);
         output.putBoolean("automatic", automatic);
         output.putBoolean("use_essentia", useEssentia);

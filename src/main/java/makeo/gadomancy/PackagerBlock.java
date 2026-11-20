@@ -21,9 +21,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-final class PackagerBlock extends Block implements EntityBlock {
+final class PackagerBlock extends PortEntityBlock implements EntityBlock {
     static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     PackagerBlock(Properties properties) {

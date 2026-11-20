@@ -2,7 +2,7 @@ package makeo.gadomancy.mixin;
 
 import makeo.gadomancy.PylonStatusEffects;
 import net.minecraft.world.entity.player.Player;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

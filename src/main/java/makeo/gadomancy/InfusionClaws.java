@@ -13,7 +13,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectList;
 import thaumcraft.crafting.InfusionRecipe;
@@ -28,18 +28,18 @@ final class InfusionClaws {
     private static final String ID = "infusion_claw";
     private static final String RECIPE = "gadomancy:" + ID;
     private static final String RESEARCH = "GADOMANCY.INFUSIONCLAW";
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Gadomancy.MOD_ID);
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Blocks BLOCKS = new PortRegistration.Blocks(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
         DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Gadomancy.MOD_ID);
 
     private static final DeferredBlock<InfusionClawBlock> BLOCK = BLOCKS.registerBlock(
         ID, InfusionClawBlock::new, properties -> properties.strength(3.5F).noOcclusion()
-            .requiresCorrectToolForDrops().pushReaction(PushReaction.IMMOVEABLE)
+            .requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK)
     );
     static final DeferredItem<BlockItem> ITEM = ITEMS.registerSimpleBlockItem(BLOCK);
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<InfusionClawBlockEntity>> TYPE =
-        BLOCK_ENTITIES.register(ID, () -> new BlockEntityType<>(InfusionClawBlockEntity::new, BLOCK.get()));
+        BLOCK_ENTITIES.register(ID, () -> BlockEntityType.Builder.of(InfusionClawBlockEntity::new, BLOCK.get()).build(null));
 
     private InfusionClaws() {
     }
@@ -52,8 +52,8 @@ final class InfusionClaws {
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.Item.BLOCK, TYPE.get(),
-            (entity, side) -> side == Direction.UP ? new WorldlyContainerWrapper(entity, side) : null);
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TYPE.get(),
+            (entity, side) -> side == Direction.UP ? new SidedInvWrapper(entity, side) : null);
     }
 
     static void registerResearch() {

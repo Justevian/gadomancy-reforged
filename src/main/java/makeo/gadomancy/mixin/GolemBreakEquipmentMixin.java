@@ -38,7 +38,7 @@ abstract class GolemBreakEquipmentMixin {
             ItemStack old = golem.getCarried();
             golem.setCarried(held.isEmpty() ? ItemStack.EMPTY : held.split(1));
             if (!old.isEmpty() && !player.addItem(old)) {
-                golem.spawnAtLocation(level, old);
+                golem.spawnAtLocation(old);
             }
         }
         ci.setReturnValue(InteractionResult.SUCCESS);

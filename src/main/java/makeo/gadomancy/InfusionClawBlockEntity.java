@@ -15,9 +15,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import makeo.gadomancy.PortNbt;
+
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.AspectList;
 import thaumcraft.blockentity.TcBlockEntity;
 import thaumcraft.infusion.InfusionMatrixBlockEntity;
@@ -27,7 +29,7 @@ import thaumcraft.wand.WandTriggers;
 import thaumcraft.wand.Wands;
 import thaumcraft.wand.focus.PrimalFocus;
 
-final class InfusionClawBlockEntity extends TcBlockEntity implements WorldlyContainer {
+final class InfusionClawBlockEntity extends TcBlockEntity implements WorldlyContainer, PortEntityBlock.Removal {
     private static final int DELAY = 290;
     private static final int COOLDOWN = 440;
     private static final int[] SLOT = {0};
@@ -217,16 +219,16 @@ final class InfusionClawBlockEntity extends TcBlockEntity implements WorldlyCont
     }
 
     @Override
-    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+    public void onBlockRemoved(BlockPos pos, BlockState state) {
         if (level instanceof ServerLevel server && !wand.isEmpty()) {
             Containers.dropItemStack(server, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, removeItemNoUpdate(0));
         }
-        super.preRemoveSideEffects(pos, state);
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var input = new PortNbt.Input(tag, registries);
+        super.loadAdditional(tag, registries);
         wand = input.read("wand", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
         owner = input.read("owner", UUIDUtil.CODEC).orElse(null);
         emptyOnly = input.getBooleanOr("empty_only", false);
@@ -234,8 +236,9 @@ final class InfusionClawBlockEntity extends TcBlockEntity implements WorldlyCont
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var output = new PortNbt.Output(tag, registries);
+        super.saveAdditional(tag, registries);
         output.store("wand", ItemStack.OPTIONAL_CODEC, wand);
         output.storeNullable("owner", UUIDUtil.CODEC, owner);
         output.putBoolean("empty_only", emptyOnly);

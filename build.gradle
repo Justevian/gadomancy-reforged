@@ -3,9 +3,9 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.148'
 }
 
-version = '0.1.25-alpha+26.3'
+version = '0.1.26-alpha+1.21.1'
 group = 'makeo.gadomancy'
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 repositories {
     maven {
@@ -15,12 +15,16 @@ repositories {
 }
 
 dependencies {
-    implementation files('libs/thaumcraft-4-reforged-1.1.3-26.3.jar')
-    runtimeOnly 'com.github.glitchfiend:TerraBlender-neoforge:26.3-26.3.0.0.9'
+    implementation files('libs/thaumcraft-4-reforged-1.1.3-1.21.1.jar')
+    // Optional coexistence check; Gadomancy does not require Thaumic Bases.
+    if (file('libs/thaumicbases-0.1.54-alpha+1.21.1.jar').isFile()) {
+        runtimeOnly files('libs/thaumicbases-0.1.54-alpha+1.21.1.jar')
+    }
+    runtimeOnly files('libs/TerraBlender-neoforge-1.21.1-4.1.0.1.jar', 'libs/curios-neoforge-9.5.1+1.21.1.jar')
 }
 
 neoForge {
-    version = '26.3.0.102'
+    version = '21.1.256'
     runs {
         client { client() }
         server {
@@ -39,4 +43,43 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.named('jar', Jar) {
     from('LICENSE')
+}
+
+tasks.withType(JavaCompile).configureEach { options.compilerArgs += ['-Xmaxerrs', '1000'] }
+
+sourceSets {
+    smoke {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+    }
+}
+configurations {
+    smokeImplementation.extendsFrom implementation
+    smokeRuntimeOnly.extendsFrom runtimeOnly
+}
+neoForge.mods.gadomancy.sourceSet(sourceSets.smoke)
+neoForge.runs.server.systemProperty('gadomancy.smoke', providers.gradleProperty('portSmoke').orElse('false').get())
+neoForge.runs.client.systemProperty('gadomancy.clientSmoke', providers.gradleProperty('clientSmoke').orElse('false').get())
+tasks.named('runServer') { standardInput = System.in }
+
+tasks.named('runServer') {
+    doLast {
+        if (providers.gradleProperty('portSmoke').orElse('false').get().toBoolean()) {
+            def log = file('run/logs/latest.log').text
+            if (!log.contains('GAD_PORT_SMOKE_PASSED') || log.contains('GAD_PORT_SMOKE_FAILED')) {
+                throw new GradleException('Gadomancy integration checks did not pass; inspect run/logs/latest.log')
+            }
+        }
+    }
+}
+
+tasks.named('runClient') {
+    doLast {
+        if (providers.gradleProperty('clientSmoke').orElse('false').get().toBoolean()) {
+            def log = file('run/logs/latest.log').text
+            if (!log.contains('GAD_CLIENT_SMOKE_PASSED') || log.contains('GAD_CLIENT_SMOKE_FAILED')) {
+                throw new GradleException('Gadomancy client checks did not pass; inspect run/logs/latest.log')
+            }
+        }
+    }
 }

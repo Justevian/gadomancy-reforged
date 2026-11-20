@@ -12,8 +12,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import makeo.gadomancy.PortNbt;
+
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import thaumcraft.aspect.Aspect;
@@ -25,7 +27,7 @@ import thaumcraft.research.ResearchItem;
 import thaumcraft.research.ResearchNote;
 import thaumcraft.research.ResearchNoteKeys;
 
-final class KnowledgeBookBlockEntity extends TcBlockEntity {
+final class KnowledgeBookBlockEntity extends TcBlockEntity implements PortEntityBlock.Removal {
     private ItemStack note = ItemStack.EMPTY;
     private int work;
     private int fuel;
@@ -166,24 +168,25 @@ final class KnowledgeBookBlockEntity extends TcBlockEntity {
     }
 
     @Override
-    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+    public void onBlockRemoved(BlockPos pos, BlockState state) {
         if (level instanceof ServerLevel server) {
             returnNote(server, false);
         }
-        super.preRemoveSideEffects(pos, state);
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var input = new PortNbt.Input(tag, registries);
+        super.loadAdditional(tag, registries);
         note = input.read("note", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
         work = input.getIntOr("work", 0);
         fuel = input.getIntOr("fuel", 0);
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        var output = new PortNbt.Output(tag, registries);
+        super.saveAdditional(tag, registries);
         output.store("note", ItemStack.OPTIONAL_CODEC, note);
         output.putInt("work", work);
         output.putInt("fuel", fuel);

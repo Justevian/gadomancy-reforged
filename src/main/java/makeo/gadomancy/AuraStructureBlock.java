@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.AspectList;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectKeys;
@@ -29,7 +29,7 @@ import thaumcraft.research.ResearchGate;
 import thaumcraft.wand.WandInteractable;
 import thaumcraft.wand.WandItem;
 
-final class AuraStructureBlock extends Block implements EntityBlock, WandInteractable {
+final class AuraStructureBlock extends PortEntityBlock implements EntityBlock, WandInteractable {
     static final IntegerProperty PART = IntegerProperty.create("part", 0, 4);
     static Consumer<AuraStructureBlockEntity> visualTick = entity -> {};
 
@@ -111,27 +111,27 @@ final class AuraStructureBlock extends Block implements EntityBlock, WandInterac
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+    protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
         InteractionHand hand, BlockHitResult hit) {
         if (state.getValue(PART) == 0 || !valid(level, base(pos, state), kind)) {
-            return InteractionResult.PASS;
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         BlockPos master = base(pos, state).above(kind.controllerPart - 1);
         if (kind == Kind.PYLON && PylonBlockEntity.crystalAspect(stack) != null
             && level.getBlockEntity(master) instanceof PylonBlockEntity pylon && !pylon.hasCrystal()) {
             if (level instanceof ServerLevel server) {
                 if (!server.mayInteract(player, pos) || !pylon.tune(stack)) {
-                    return InteractionResult.FAIL;
+                    return net.minecraft.world.ItemInteractionResult.FAIL;
                 }
                 stack.consume(1, player);
             }
-            return InteractionResult.SUCCESS;
+            return net.minecraft.world.ItemInteractionResult.SUCCESS;
         }
         if (kind == Kind.CONDENSER && stack.getItem() instanceof PhialItem phial
             && level.getBlockEntity(master) instanceof CondenserBlockEntity condenser) {
-            return transferPhial(stack, phial, condenser, player);
+            return PortInteractions.item(transferPhial(stack, phial, condenser, player));
         }
-        return InteractionResult.PASS;
+        return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     private static InteractionResult transferPhial(ItemStack stack, PhialItem phial,
@@ -221,8 +221,8 @@ final class AuraStructureBlock extends Block implements EntityBlock, WandInterac
     }
 
     @Override
-    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        if (state.getValue(PART) != 0 && !level.getBlockState(pos).is(this)) {
+    protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState next, boolean movedByPiston) {
+        if (world instanceof ServerLevel level && state.getValue(PART) != 0 && !state.is(next.getBlock())) {
             BlockPos bottom = base(pos, state);
             BlockPos controller = bottom.above(kind.controllerPart - 1);
             AuraStructureBlockEntity master = level.getBlockEntity(controller) instanceof AuraStructureBlockEntity structure ? structure : null;
@@ -231,7 +231,7 @@ final class AuraStructureBlock extends Block implements EntityBlock, WandInterac
                 master.onDisassembled(level);
             }
         }
-        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        super.onRemove(state, world, pos, next, movedByPiston);
     }
 
     static void disassemble(ServerLevel level, BlockPos bottom, Kind kind) {

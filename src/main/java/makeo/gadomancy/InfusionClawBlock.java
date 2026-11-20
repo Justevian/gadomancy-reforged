@@ -16,11 +16,11 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.infusion.InfusionMatrixBlockEntity;
 import thaumcraft.wand.Wands;
 
-final class InfusionClawBlock extends Block implements EntityBlock {
+final class InfusionClawBlock extends PortEntityBlock implements EntityBlock {
     InfusionClawBlock(Properties properties) {
         super(properties);
     }
@@ -47,17 +47,17 @@ final class InfusionClawBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos, Player player,
+    protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack held, BlockState state, Level level, BlockPos pos, Player player,
         InteractionHand hand, BlockHitResult hit) {
         if (!Wands.isWand(held) || !(level.getBlockEntity(pos) instanceof InfusionClawBlockEntity claw) || !claw.canInsert()) {
-            return InteractionResult.PASS;
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (!level.isClientSide()) {
             claw.claim(player);
             claw.setItem(0, held.copyWithCount(1));
             held.consume(1, player);
         }
-        return InteractionResult.SUCCESS;
+        return net.minecraft.world.ItemInteractionResult.SUCCESS;
     }
 
     @Override
@@ -85,7 +85,7 @@ final class InfusionClawBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction side) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         return level.getBlockEntity(pos.below()) instanceof InfusionMatrixBlockEntity matrix && matrix.isCrafting() ? 15 : 0;
     }
 }

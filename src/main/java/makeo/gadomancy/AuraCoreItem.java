@@ -84,9 +84,9 @@ final class AuraCoreItem extends Item {
         if (!(item.level() instanceof ServerLevel level) || !item.getPersistentData().contains(START)) {
             return false;
         }
-        long elapsed = level.getGameTime() - item.getPersistentData().getLongOr(START, level.getGameTime());
+        long elapsed = level.getGameTime() - makeo.gadomancy.PortNbt.getLongOr(item.getPersistentData(), START, level.getGameTime());
         if (elapsed >= DURATION) {
-            int variant = sampleAura(level, item.blockPosition(), item.getPersistentData().getIntOr(CLUSTER, -1));
+            int variant = sampleAura(level, item.blockPosition(), makeo.gadomancy.PortNbt.getIntOr(item.getPersistentData(), CLUSTER, -1));
             if (variant >= 0) {
                 item.setItem(new ItemStack(AuraCores.CHARGED.get(variant).get()));
             }

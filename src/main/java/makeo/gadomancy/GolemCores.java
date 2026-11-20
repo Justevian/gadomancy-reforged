@@ -24,7 +24,7 @@ public final class GolemCores {
     private static final String BREAK_ID = "golem_core_break";
     private static final String BODYGUARD_ID = "golem_core_bodyguard";
 
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     static final DeferredItem<GolemPartItem> BREAK_ITEM = ITEMS.registerItem(BREAK_ID,
         properties -> new GolemPartItem(properties, GolemPartItem.Kind.CORE, BREAK));
     static final DeferredItem<GolemPartItem> BODYGUARD_ITEM = ITEMS.registerItem(BODYGUARD_ID,

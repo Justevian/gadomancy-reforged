@@ -27,8 +27,8 @@ final class RemoteJars {
     private static final String ID = "remote_jar";
     private static final String RECIPE = "gadomancy:remote_jar";
     private static final String RESEARCH = "GADOMANCY.REMOTEJAR";
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Gadomancy.MOD_ID);
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Blocks BLOCKS = new PortRegistration.Blocks(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
         DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Gadomancy.MOD_ID);
     private static final DeferredRegister<DataComponentType<?>> COMPONENTS =
@@ -36,13 +36,13 @@ final class RemoteJars {
 
     static final DeferredBlock<RemoteJarBlock> BLOCK = BLOCKS.registerBlock(ID, RemoteJarBlock::new,
         properties -> properties.strength(0.3F).sound(SoundType.GLASS).noOcclusion().lightLevel(state -> 9)
-            .isSuffocating((state, level, pos) -> false).isViewBlocking((state, level, pos, box) -> false)
+            .isSuffocating((state, level, pos) -> false).isViewBlocking((state, level, pos) -> false)
     );
     static final DeferredItem<RemoteJarItem> ITEM = ITEMS.registerItem(ID,
         properties -> new RemoteJarItem(BLOCK.get(), properties), properties -> properties.rarity(Rarity.UNCOMMON).stacksTo(1)
     );
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RemoteJarBlockEntity>> TYPE =
-        BLOCK_ENTITIES.register(ID, () -> new BlockEntityType<>(RemoteJarBlockEntity::new, BLOCK.get()));
+        BLOCK_ENTITIES.register(ID, () -> BlockEntityType.Builder.of(RemoteJarBlockEntity::new, BLOCK.get()).build(null));
     static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> NETWORK =
         COMPONENTS.register("remote_jar_network",
             () -> DataComponentType.<UUID>builder().persistent(UUIDUtil.CODEC).networkSynchronized(UUIDUtil.STREAM_CODEC).build());

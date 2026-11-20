@@ -14,7 +14,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectKeys;
 import thaumcraft.aspect.AspectList;
@@ -36,8 +36,8 @@ final class StickyJars {
     private static final String WARDED_ID = "sticky_warded_jar";
     private static final String VOID_ID = "sticky_void_jar";
     private static final String REMOTE_ID = "sticky_remote_jar";
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Gadomancy.MOD_ID);
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Blocks BLOCKS = new PortRegistration.Blocks(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
         DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Gadomancy.MOD_ID);
 
@@ -55,14 +55,14 @@ final class StickyJars {
         List.of(WARDED_ITEM, VOID_ITEM, REMOTE_ITEM);
 
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MountedJarBlockEntity>> TYPE =
-        BLOCK_ENTITIES.register("sticky_jar", () -> new BlockEntityType<>(
+        BLOCK_ENTITIES.register("sticky_jar", () -> BlockEntityType.Builder.of(
             (pos, state) -> new MountedJarBlockEntity(StickyJars.TYPE.get(), pos, state, state.is(VOID.get())),
             WARDED.get(), VOID.get()
-        ));
+        ).build(null));
     static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RemoteJarBlockEntity>> REMOTE_TYPE =
-        BLOCK_ENTITIES.register(REMOTE_ID, () -> new BlockEntityType<>(
+        BLOCK_ENTITIES.register(REMOTE_ID, () -> BlockEntityType.Builder.of(
             (pos, state) -> new RemoteJarBlockEntity(StickyJars.REMOTE_TYPE.get(), pos, state), REMOTE.get()
-        ));
+        ).build(null));
 
     private StickyJars() {
     }

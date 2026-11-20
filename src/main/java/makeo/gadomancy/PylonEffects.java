@@ -19,11 +19,11 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.monster.cubemob.Slime;
-import net.minecraft.world.entity.animal.sheep.Sheep;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -33,7 +33,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
-import thaumcraft.Config;
+
 import makeo.gadomancy.mixin.ChampionWhitelistInvoker;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.entity.golem.GolemBase;
@@ -64,38 +64,38 @@ final class PylonEffects {
     }
 
     private static final Map<Aspect, Effect> POTIONS = Map.ofEntries(
-        Map.entry(Aspect.AIR, new Effect(MobEffects.SPEED, 4, 6, 6, 1)),
+        Map.entry(Aspect.AIR, new Effect(MobEffects.MOVEMENT_SPEED, 4, 6, 6, 1)),
         Map.entry(Aspect.WATER, new Effect(MobEffects.WATER_BREATHING, 4, 10, 10, 0)),
-        Map.entry(Aspect.EARTH, new Effect(MobEffects.RESISTANCE, 4, 8, 5, 0)),
+        Map.entry(Aspect.EARTH, new Effect(MobEffects.DAMAGE_RESISTANCE, 4, 8, 5, 0)),
         Map.entry(Aspect.ORDER, new Effect(MobEffects.REGENERATION, 4, 6, 3, 0)),
         Map.entry(Aspect.ENTROPY, new Effect(MobEffects.WEAKNESS, 4, 8, 3, 0)),
-        Map.entry(Aspect.WEAPON, new Effect(MobEffects.STRENGTH, 4, 6, 6, 2)),
-        Map.entry(Aspect.ARMOR, new Effect(MobEffects.RESISTANCE, 4, 6, 6, 1)),
-        Map.entry(Aspect.MOTION, new Effect(MobEffects.SPEED, 4, 6, 2, 2)),
-        Map.entry(Aspect.TRAVEL, new Effect(MobEffects.SPEED, 2, 10, 15, 0)),
+        Map.entry(Aspect.WEAPON, new Effect(MobEffects.DAMAGE_BOOST, 4, 6, 6, 2)),
+        Map.entry(Aspect.ARMOR, new Effect(MobEffects.DAMAGE_RESISTANCE, 4, 6, 6, 1)),
+        Map.entry(Aspect.MOTION, new Effect(MobEffects.MOVEMENT_SPEED, 4, 6, 2, 2)),
+        Map.entry(Aspect.TRAVEL, new Effect(MobEffects.MOVEMENT_SPEED, 2, 10, 15, 0)),
         Map.entry(Aspect.HUNGER, new Effect(MobEffects.HUNGER, 4, 6, 2, 0)),
         Map.entry(Aspect.SENSES, new Effect(MobEffects.NIGHT_VISION, 2, 8, 8, 0)),
-        Map.entry(Aspect.FLIGHT, new Effect(MobEffects.JUMP_BOOST, 2, 5, 4, 0)),
-        Map.entry(Aspect.ENERGY, new Effect(MobEffects.STRENGTH, 4, 6, 4, 0)),
+        Map.entry(Aspect.FLIGHT, new Effect(MobEffects.JUMP, 2, 5, 4, 0)),
+        Map.entry(Aspect.ENERGY, new Effect(MobEffects.DAMAGE_BOOST, 4, 6, 4, 0)),
         Map.entry(Aspect.DARKNESS, new Effect(MobEffects.BLINDNESS, 4, 6, 1, 0)),
         Map.entry(Aspect.HEAL, new Effect(MobEffects.REGENERATION, 8, 10, 5, 1)),
         Map.entry(Aspect.DEATH, new Effect(MobEffects.WITHER, 4, 6, 3, 1)),
         Map.entry(Aspect.MAN, new Effect(MobEffects.HEALTH_BOOST, 2, 5, 4, 1)),
-        Map.entry(Aspect.COLD, new Effect(MobEffects.SLOWNESS, 2, 5, 3, 1)),
-        Map.entry(Aspect.TOOL, new Effect(MobEffects.HASTE, 2, 7, 6, 0)),
-        Map.entry(Aspect.MINE, new Effect(MobEffects.HASTE, 2, 7, 5, 2)),
+        Map.entry(Aspect.COLD, new Effect(MobEffects.MOVEMENT_SLOWDOWN, 2, 5, 3, 1)),
+        Map.entry(Aspect.TOOL, new Effect(MobEffects.DIG_SPEED, 2, 7, 6, 0)),
+        Map.entry(Aspect.MINE, new Effect(MobEffects.DIG_SPEED, 2, 7, 5, 2)),
         Map.entry(Aspect.POISON, new Effect(MobEffects.POISON, 2, 6, 1, 0)),
-        Map.entry(Aspect.TRAP, new Effect(MobEffects.SLOWNESS, 4, 6, 3, 0))
+        Map.entry(Aspect.TRAP, new Effect(MobEffects.MOVEMENT_SLOWDOWN, 4, 6, 3, 0))
     );
 
-    private static final Effect UNDEAD_STRENGTH = new Effect(MobEffects.STRENGTH, 4, 30, 3, 1);
-    private static final Effect UNDEAD_SPEED = new Effect(MobEffects.SPEED, 4, 30, 3, 0);
+    private static final Effect UNDEAD_STRENGTH = new Effect(MobEffects.DAMAGE_BOOST, 4, 30, 3, 1);
+    private static final Effect UNDEAD_SPEED = new Effect(MobEffects.MOVEMENT_SPEED, 4, 30, 3, 0);
     private static final Effect UNDEAD_REGENERATION = new Effect(MobEffects.REGENERATION, 4, 30, 3, 0);
     private static final Effect GOLEM_BUFF = new Effect(PylonStatusEffects.GOLEM_BUFF, 4, 10, 6, 0);
     private static final Effect VIS_DISCOUNT = new Effect(PylonStatusEffects.VIS_DISCOUNT, 4, 6, 5, 1);
     private static final Map<ServerLevel, Map<BlockPos, Long>> LIGHT_FIELDS = new WeakHashMap<>();
     private static final List<EntityType<? extends Mob>> FARM_ANIMALS =
-        List.of(EntityTypes.CHICKEN, EntityTypes.COW, EntityTypes.PIG, EntityTypes.SHEEP);
+        List.of(EntityType.CHICKEN, EntityType.COW, EntityType.PIG, EntityType.SHEEP);
     private static final String ELDRITCH_EXPOSURE = "gadomancy_pylon_eldritch_exposure";
     private static final String ELDRITCH_EXPIRY = "gadomancy_pylon_eldritch_expiry";
 
@@ -175,7 +175,7 @@ final class PylonEffects {
 
     @SubscribeEvent
     static void suppressMonsterSpawn(MobSpawnEvent.PositionCheck event) {
-        if (!(event.getLevel() instanceof ServerLevel level) || event.getSpawnType() != EntitySpawnReason.NATURAL
+        if (!(event.getLevel() instanceof ServerLevel level) || event.getSpawnType() != MobSpawnType.NATURAL
             || event.getEntity().getType().getCategory() != MobCategory.MONSTER) {
             return;
         }
@@ -200,7 +200,7 @@ final class PylonEffects {
         int samples;
         if (aspect == Aspect.COLD && tick % 2 == 0) {
             samples = 10 + server.getRandom().nextInt(10);
-        } else if (aspect == Aspect.TAINT && tick % 20 == 0 && Config.taintSpreadRate() > 0) {
+        } else if (aspect == Aspect.TAINT && tick % 20 == 0) {
             samples = 5;
         } else if (aspect == Aspect.PLANT || aspect == Aspect.TREE && tick % 3 == 0) {
             samples = aspect == Aspect.PLANT ? 60 : 40;
@@ -208,7 +208,7 @@ final class PylonEffects {
             BlockPos selected = randomPosition(server, center);
             if (server.hasChunkAt(selected)) {
                 BlockPos surface = server.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, selected);
-                var bolt = EntityTypes.LIGHTNING_BOLT.create(server, EntitySpawnReason.TRIGGERED);
+                var bolt = EntityType.LIGHTNING_BOLT.create(server);
                 if (bolt != null) {
                     bolt.setPos(Vec3.atBottomCenterOf(surface));
                     server.addFreshEntity(bolt);
@@ -259,9 +259,9 @@ final class PylonEffects {
         }
         var random = level.getRandom();
         EntityType<? extends Mob> type = aspect == Aspect.BEAST ? FARM_ANIMALS.get(random.nextInt(FARM_ANIMALS.size()))
-            : aspect == Aspect.SLIME ? EntityTypes.SLIME : aspect == Aspect.UNDEAD ? ModEntities.BRAINY_ZOMBIE.get()
-            : random.nextBoolean() ? EntityTypes.SKELETON : EntityTypes.ZOMBIE;
-        Mob spawned = type.create(level, EntitySpawnReason.TRIGGERED);
+            : aspect == Aspect.SLIME ? EntityType.SLIME : aspect == Aspect.UNDEAD ? ModEntities.BRAINY_ZOMBIE.get()
+            : random.nextBoolean() ? EntityType.SKELETON : EntityType.ZOMBIE;
+        Mob spawned = type.create(level);
         if (spawned == null) {
             return;
         }
@@ -273,7 +273,7 @@ final class PylonEffects {
             slime.setSize(1, true);
         }
         if (aspect == Aspect.SOUL) {
-            spawned.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(type == EntityTypes.SKELETON ? Items.BOW : Items.STONE_SWORD));
+            spawned.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(type == EntityType.SKELETON ? Items.BOW : Items.STONE_SWORD));
             spawned.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.CARVED_PUMPKIN));
             spawned.setDropChance(EquipmentSlot.MAINHAND, 0F);
             spawned.setDropChance(EquipmentSlot.HEAD, 0F);
@@ -285,7 +285,7 @@ final class PylonEffects {
     private static void exposeToEldritch(ServerLevel level, Mob mob) {
         var state = mob.getPersistentData();
         long tick = level.getGameTime();
-        int exposure = tick < state.getLongOr(ELDRITCH_EXPIRY, 0) ? state.getIntOr(ELDRITCH_EXPOSURE, 0) + 1 : 1;
+        int exposure = tick < makeo.gadomancy.PortNbt.getLongOr(state, ELDRITCH_EXPIRY, 0) ? makeo.gadomancy.PortNbt.getIntOr(state, ELDRITCH_EXPOSURE, 0) + 1 : 1;
         if (exposure >= 6) {
             ChampionModifier.assign(mob, level.getRandom().nextInt(ChampionModifier.count()), true);
             state.remove(ELDRITCH_EXPOSURE);

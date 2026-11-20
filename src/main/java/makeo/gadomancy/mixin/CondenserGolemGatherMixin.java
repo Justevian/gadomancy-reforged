@@ -34,7 +34,7 @@ abstract class CondenserGolemGatherMixin {
         Operation<Boolean> original) {
         if (CondenserGolemAccess.canBind(golem.level(), home, golem.getHomeFacing())
             || CondenserGolemAccess.isEssentiaSource(golem.level(), home)) {
-            return original.call(golem, golem.getHomePosition(), distanceSquared);
+            return original.call(golem, golem.getRestrictCenter(), distanceSquared);
         }
         return original.call(golem, home, distanceSquared);
     }

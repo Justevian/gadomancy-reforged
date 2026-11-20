@@ -3,7 +3,7 @@ package makeo.gadomancy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.bus.api.IEventBus;
@@ -26,7 +26,7 @@ final class AuraCores {
     static final String RESEARCH = "GADOMANCY.AURA_CORE";
     private static final String CLEAN_RESEARCH = "GADOMANCY.CLEAN_AURA_CORE";
     private static final String INFUSION = "gadomancy:aura_core";
-    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Gadomancy.MOD_ID);
+    private static final PortRegistration.Items ITEMS = new PortRegistration.Items(Gadomancy.MOD_ID);
 
     static final List<Aspect> PRIMALS = List.of(
         Aspect.AIR, Aspect.FIRE, Aspect.WATER, Aspect.EARTH, Aspect.ORDER, Aspect.ENTROPY
@@ -92,7 +92,7 @@ final class AuraCores {
             washRecipes.add(wash);
             if (variant.equals("earth") || variant.equals("entropy")) {
                 String salvage = "gadomancy:salvage_aura_core_" + variant;
-                TcRecipes.register(new CraftingRecipeRef(salvage, "", Identifier.parse(salvage), blank));
+                TcRecipes.register(new CraftingRecipeRef(salvage, "", ResourceLocation.parse(salvage), blank));
                 salvageRecipes.add(salvage);
             }
         }

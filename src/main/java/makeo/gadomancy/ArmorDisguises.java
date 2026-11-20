@@ -19,7 +19,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import thaumcraft.aspect.Aspect;
 import thaumcraft.aspect.AspectList;
 import thaumcraft.crafting.InfusionCrafting;
@@ -149,14 +149,8 @@ public final class ArmorDisguises {
     }
 
     private static @Nullable EquipmentSlot armorSlot(ItemStack stack) {
-        var equippable = stack.get(DataComponents.EQUIPPABLE);
-        if (equippable == null || stack.getMaxStackSize() != 1) {
-            return null;
-        }
-        return switch (equippable.slot()) {
-            case HEAD, CHEST, LEGS, FEET -> equippable.assetId().isPresent() ? equippable.slot() : null;
-            default -> null;
-        };
+        if (stack.getMaxStackSize() != 1 || !(stack.getItem() instanceof net.minecraft.world.item.ArmorItem armor)) return null;
+        return armor.getEquipmentSlot();
     }
 
     public static ItemStack apply(String key, ItemStack armor, ItemStack appearance) {
