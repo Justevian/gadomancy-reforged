@@ -45,6 +45,14 @@ final class AuraCores {
 
     static void register(IEventBus bus) {
         ITEMS.register(bus);
+        thaumcraft.aspect.AspectSync.addRegistrar(registry -> {
+            var base = new AspectList().add(Aspect.MAGIC, 6).add(Aspect.AURA, 12)
+                .add(Aspect.ELDRITCH, 4).add(Aspect.VOID, 10);
+            registry.register(BLANK.get(), base);
+            for (int index = 0; index < CHARGED.size(); index++) {
+                registry.register(CHARGED.get(index).get(), base.copy().add(PRIMALS.get(index), 26));
+            }
+        });
     }
 
     static void registerResearch() {

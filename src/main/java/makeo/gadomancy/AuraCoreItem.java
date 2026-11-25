@@ -27,6 +27,7 @@ import thaumcraft.wand.WandItem;
 final class AuraCoreItem extends Item {
     private static final String CLUSTER = "gadomancy_aura_cluster";
     private static final String START = "gadomancy_aura_start";
+    private static final String ORIGIN = "gadomancy_aura_origin";
     private static final int DURATION = 500;
 
     AuraCoreItem(Properties properties) {
@@ -71,6 +72,7 @@ final class AuraCoreItem extends Item {
 
         core.getPersistentData().putLong(START, level.getGameTime());
         core.getPersistentData().putInt(CLUSTER, kind);
+        core.getPersistentData().putLong(ORIGIN, pos.asLong());
         core.setPickUpDelay(DURATION);
         core.lifespan = Math.max(core.lifespan, core.getAge() + DURATION + 20);
         level.sendParticles(ParticleTypes.EXPLOSION, center.x, center.y, center.z, 1, 0, 0, 0, 0);
@@ -90,6 +92,7 @@ final class AuraCoreItem extends Item {
             if (variant >= 0) {
                 item.setItem(new ItemStack(AuraCores.CHARGED.get(variant).get()));
             }
+            item.getPersistentData().remove(ORIGIN);
             item.getPersistentData().remove(START);
             item.getPersistentData().remove(CLUSTER);
             item.setDefaultPickUpDelay();
@@ -97,12 +100,30 @@ final class AuraCoreItem extends Item {
                 item.getX(), item.getY(), item.getZ(), 18, 0.35, 0.35, 0.35, 0.03);
         } else {
             item.setPickUpDelay((int) (DURATION - Math.max(0, elapsed)));
-            if (elapsed >= 50 && elapsed % 8 == 0) {
-                level.sendParticles(ParticleTypes.ENCHANT, item.getX(), item.getY() + 0.2, item.getZ(),
-                    8, 0.4, 0.4, 0.4, 0.1);
-            }
+            if (elapsed >= 0 && elapsed % 2 == 0) chargeTrails(level, item, elapsed);
         }
         return false;
+    }
+
+    private static void chargeTrails(ServerLevel level, ItemEntity item, long elapsed) {
+        Vec3 center = item.position().add(0, 0.25, 0);
+        Vec3 origin = Vec3.atCenterOf(BlockPos.of(PortNbt.getLongOr(item.getPersistentData(), ORIGIN, item.blockPosition().asLong())));
+        int kind = PortNbt.getIntOr(item.getPersistentData(), CLUSTER, CrystalClusterBlock.MIXED);
+        double radius = 0.85 * Math.min(1.0, (DURATION - elapsed) / 450.0);
+        for (int i = 0; i < AuraCores.PRIMALS.size(); i++) {
+            Aspect aspect = AuraCores.PRIMALS.get(kind >= 0 && kind < AuraCores.PRIMALS.size() ? kind : i);
+            double phase = i * Math.PI / 3;
+            double angle = phase + elapsed * Math.PI * 2 / (120 + i * 7);
+            Vec3 orbit = center.add(radius * Math.cos(angle), radius * Math.sin(angle) * Math.sin(phase),
+                radius * Math.sin(angle) * Math.cos(phase));
+            Vec3 from = elapsed < 50 ? origin : orbit;
+            Vec3 to = elapsed < 50 ? orbit : center;
+            var dust = new net.minecraft.core.particles.DustParticleOptions(
+                Vec3.fromRGB24(aspect.getColor()).toVector3f(), 0.48F);
+            double progress = ((elapsed / 2 + i) % 7) / 7.0;
+            Vec3 point = from.lerp(to, progress);
+            level.sendParticles(dust, point.x, point.y, point.z, 1, 0, 0, 0, 0);
+        }
     }
 
     private static int sampleAura(ServerLevel level, BlockPos center, int kind) {

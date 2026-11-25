@@ -29,6 +29,19 @@ final class ResearchLinks {
 
     static String link(String original) { return "GADOMANCY.PSEUDO." + original; }
 
+    static void revealScannedCoreResearch(ServerPlayer player) {
+        var knowledge = thaumcraft.research.Knowledge.get(player);
+        for (var research : ResearchCategories.allResearch()) {
+            if (!research.key().startsWith("GADOMANCY.") || !research.isHidden()) continue;
+            for (var trigger : research.itemTriggers()) {
+                if (trigger.getNamespace().equals(Gadomancy.MOD_ID) && trigger.getPath().startsWith("aura_core_")
+                    && knowledge.isScanned(thaumcraft.research.ScanKind.OBJECT, trigger.toString())) {
+                    ResearchManager.createClue(player, research.key());
+                }
+            }
+        }
+    }
+
     static void register() {
 
         for (Link link : LINKS) {
@@ -47,6 +60,7 @@ final class ResearchLinks {
     @SubscribeEvent
     static void update(PlayerTickEvent.Post event) {
         if (!(event.getEntity() instanceof ServerPlayer player) || player.tickCount % 20 != 0) return;
+        revealScannedCoreResearch(player);
         if (!ResearchManager.isComplete(player, FAMILIAR_ELEMENT)
             && List.of(FamiliarAugment.FIRE, FamiliarAugment.SHOCK, FamiliarAugment.POISON, FamiliarAugment.WEAKNESS)
                 .stream().anyMatch(element -> ResearchManager.isComplete(player, element.research()))) {
